@@ -20,7 +20,7 @@ const Navbar = () => {
       }}
     >
       <Link className="link" to={"/"}>
-        <div className="font-800 medium">Change</div>
+        <div className="font-800 medium">CFBS</div>
       </Link>
       <div style={{ paddingRight: "50px" }}>
         <button className="button">sign in</button>

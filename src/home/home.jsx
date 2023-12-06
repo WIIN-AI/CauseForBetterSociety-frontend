@@ -8,8 +8,6 @@ const Home = () => {
 
   const timelineCardData = useFetch(`${process.env.REACT_APP_API}/get_images/`).data
 
-  console.log(timelineCardData)
-
   return (
     <Grid mt={8} marginX={1} className="flex">
       <Grid container md={8} item>
