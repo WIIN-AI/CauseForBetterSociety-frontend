@@ -1,5 +1,5 @@
-import { Box, Container, FormControl, Grid, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Box, Container, TextField } from "@mui/material";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const CreatePost = () => {
