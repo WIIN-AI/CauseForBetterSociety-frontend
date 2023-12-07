@@ -10,6 +10,13 @@
   font-family: 'Playfair Display', serif !important;
 }
 
+.text-warp {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 250px;
+}
+
 
 .font-200 { font-weight: 200}
 .font-300 { font-weight: 300}

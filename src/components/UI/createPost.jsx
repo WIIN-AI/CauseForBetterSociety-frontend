@@ -1,5 +1,5 @@
-import { Box, Container, Grid, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Box, Container, TextField } from "@mui/material";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const CreatePost = () => {
@@ -12,7 +12,7 @@ const CreatePost = () => {
   const [imageUrl, setImageUrl] = useState(null);
 
   function onImageChange(e) {
-    setImage(e.target.files[0].name);
+    setImage(e.target.value);
     const imageFile = e.target.files[0];
     const imageURL = URL.createObjectURL(imageFile);
     setImageUrl(imageURL);
@@ -47,61 +47,67 @@ const CreatePost = () => {
     <Container maxWidth="md">
       <Box className="center text-center" mt={8}>
         <text className="heading font-800 capitalize">create post</text>
-        <Box
-          m={2}
-          p={2}
-          style={{
-            borderRadius: "5px",
-            width: "100%",
-            minHeight: "50vh",
-            position: "relative",
-            cursor: "pointer",
-            border: "2px solid #00000020",
-          }}
-        >
-          <TextField
-            fullWidth
-            label="subject"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            placeholder="write here"
-            sx={{
-              margin: "0 0 10px",
+        <form onSubmit={submit}>
+          <Box
+            m={2}
+            p={2}
+            style={{
+              borderRadius: "5px",
+              width: "100%",
+              minHeight: "30vh",
+              position: "relative",
+              cursor: "pointer",
+              border: "2px solid #00000020",
             }}
-          />
+          >
+            <TextField
+              fullWidth
+              required
+              label="subject"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              placeholder="write here"
+              sx={{
+                margin: "0 0 10px",
+              }}
+            />
 
-          {imageUrl !== null && <img src={imageUrl} alt="image_preview" />}
+            {imageUrl !== null && <img src={imageUrl} alt="image_preview" />}
 
-          <TextField
-            fullWidth
-            type="file"
-            accept="image/*"
-            onChange={onImageChange}
-            sx={{
-              margin: "0 0 10px",
-            }}
-          />
+            <TextField
+              fullWidth
+              required
+              type="file"
+              value={image}
+              accept="image/*"
+              onChange={onImageChange}
+              sx={{
+                margin: "0 0 10px",
+              }}
+            />
 
-          <TextField
-            fullWidth
-            id="outlined-multiline-static"
-            label="descrption"
-            multiline
-            rows={20}
-            placeholder="write here"
-            value={story}
-            onChange={(e) => setStory(e.target.value)}
-          />
+            <TextField
+              fullWidth
+              required
+              id="outlined-multiline-static"
+              label="descrption"
+              multiline
+              rows={10}
+              placeholder="write here"
+              value={story}
+              onChange={(e) => setStory(e.target.value)}
+            />
 
-          <Box mt={2}>
-            <button onClick={submit} className="button">
-              post
-            </button>
-            <button onClick={reset} className="reset">
-              reset
-            </button>
+            <Box mt={2}>
+              <button type="submit" className="button">
+                post
+              </button>
+              <button type="button" onClick={reset} className="reset">
+                reset
+              </button>
+            </Box>
           </Box>
-        </Box>
+        </form>
       </Box>
     </Container>
   );
