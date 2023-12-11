@@ -27,7 +27,7 @@ const Navbar = () => {
         <button className="button">sign up</button>
 
         <Link className="link" to={"/create"}>
-          <button className="button">Create</button>
+          <button className="button">write</button>
         </Link>
         
       </div>

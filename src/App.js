@@ -6,6 +6,12 @@ import NoPage from "./home/nopage";
 import { Container } from "@mui/material";
 import CreatePost from "./components/UI/createPost";
 import PostDetails from "./components/UI/post";
+import About from './pages/about'
+import Contact from './pages/contact'
+import ClearedIssues from './pages/clearIssues'
+import Profile from './pages/profile'
+import SavedPost from "./pages/SavedPost";
+
 
 function App() {
   return (
@@ -16,6 +22,13 @@ function App() {
             <Route index element={<Home />} />
             <Route path="/create" element={<CreatePost />} />
             <Route path="/post/:id" element={<PostDetails />}/>
+            <Route path="/saved" element={<SavedPost />} />
+
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/clearedissues" element={<ClearedIssues />} />
+            <Route path="/profile" element={<Profile />} />
+
             <Route path="*" element={<NoPage />} />
           </Routes>
       </Container>
