@@ -46,7 +46,7 @@ const CreatePost = () => {
   return (
     <Container maxWidth="md">
       <Box className="center text-center" mt={8}>
-        <text className="heading font-800 capitalize">create post</text>
+        <p className="heading font-800 capitalize">create post</p>
         <form onSubmit={submit}>
           <Box
             m={2}
