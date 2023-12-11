@@ -11,6 +11,7 @@ import Contact from './pages/contact'
 import ClearedIssues from './pages/clearIssues'
 import Profile from './pages/profile'
 import SavedPost from "./pages/SavedPost";
+import MyArticles from "./pages/yourArticle";
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
             <Route path="/create" element={<CreatePost />} />
             <Route path="/post/:id" element={<PostDetails />}/>
             <Route path="/saved" element={<SavedPost />} />
+            <Route path="/articles" element={<MyArticles />} />
 
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />

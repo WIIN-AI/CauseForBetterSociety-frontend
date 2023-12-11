@@ -7,6 +7,7 @@ import SearchIcon from '@mui/icons-material/Search';
 const Notification = () => {
   const navigate = useNavigate();
   const login  = false
+
   return (
     <Grid minWidth={"37vh"} container item>
       <Box
@@ -50,11 +51,19 @@ const Notification = () => {
         <Box
           onClick={() => navigate("/clearedissues")}
           sx={{
-            cursor: "pointer", borderBottom : "1px solid #e2e2e2", padding: "15px 5px"
+            cursor: "pointer", borderBottom : "1px solid #000000", padding: "15px 5px"
           }}
         >
           Cleared issues
         </Box>
+        {login && <Box
+          onClick={() => navigate("/profile")}
+          sx={{
+            cursor: "pointer", borderBottom : "1px solid #e2e2e2", padding: "15px 5px"
+          }}
+        >
+          Profile
+        </Box>}
         {login && <Box
           onClick={() => navigate("/saved")}
           sx={{
@@ -62,6 +71,14 @@ const Notification = () => {
           }}
         >
           Saved
+        </Box>}
+        {login && <Box
+          onClick={() => navigate("/articles")}
+          sx={{
+            cursor: "pointer", borderBottom : "1px solid #000000", padding: "15px 5px"
+          }}
+        >
+          Your Articles
         </Box>}
         <Box
           onClick={() => navigate("/about")}
@@ -79,14 +96,6 @@ const Notification = () => {
         >
           Contact us
         </Box>
-        {login && <Box
-          onClick={() => navigate("/profile")}
-          sx={{
-            cursor: "pointer", borderBottom : "1px solid #e2e2e2", padding: "15px 5px"
-          }}
-        >
-          Profile
-        </Box>}
         {login && <Box
           onClick={() => navigate("/out")}
           sx={{
