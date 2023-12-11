@@ -1,8 +1,8 @@
 import "./App.css";
 import Navbar from "./components/nav/nav";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./home/home";
-import NoPage from "./home/nopage";
+import Home from "./pages/home";
+import NoPage from "./pages/nopage";
 import { Container } from "@mui/material";
 import CreatePost from "./components/UI/createPost";
 import PostDetails from "./components/UI/post";
