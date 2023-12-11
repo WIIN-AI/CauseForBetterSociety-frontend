@@ -33,12 +33,16 @@
 
 .bg-white {background-color: #ffffff}
 .bg-primary {background-color: #ffffff}
-.bg-primary:hover {background-color: #f2f2f8}
+.bg-primary:hover {background-color: #f3f3f3}
 .bg-black {background-color: #000000}
 
 .text-center{text-align: center;}
 .text-left{text-align: left;}
 .text-right{text-align: right;}
+
+.text-justified {
+  text-align: justify;
+}
 
 .center{align-items: center;}
 .start{align-items: start;}

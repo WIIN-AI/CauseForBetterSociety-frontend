@@ -5,6 +5,7 @@ import Home from "./home/home";
 import NoPage from "./home/nopage";
 import { Container } from "@mui/material";
 import CreatePost from "./components/UI/createPost";
+import PostDetails from "./components/UI/post";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Routes>
             <Route index element={<Home />} />
             <Route path="/create" element={<CreatePost />} />
+            <Route path="/post/:id" element={<PostDetails />}/>
             <Route path="*" element={<NoPage />} />
           </Routes>
       </Container>
