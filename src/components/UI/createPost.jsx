@@ -1,9 +1,17 @@
 import { Box, Container, TextField } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {loginDetails} from './../../components/loginDetails'
 
 const CreatePost = () => {
   const navigate = useNavigate();
+
+  const login  = loginDetails.login
+
+  useEffect(()=>{
+    !login && navigate('/')
+  },[])
+
 
   const [subject, setSubject] = useState("");
   const [story, setStory] = useState("");

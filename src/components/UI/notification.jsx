@@ -3,13 +3,14 @@ import React from "react";
 import { useNavigate } from "react-router";
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
 import SearchIcon from '@mui/icons-material/Search';
+import {loginDetails} from './../../components/loginDetails'
 
 const Notification = () => {
   const navigate = useNavigate();
-  const login  = false
-
+  const login  = loginDetails.login
+  
   return (
-    <Grid minWidth={"37vh"} container item>
+    <Grid lg={12} container item>
       <Box
         textAlign={"center"}
         width={"100%"}
@@ -38,7 +39,7 @@ const Notification = () => {
               </InputAdornment>
             ),
           }}
-        sx={{paddingTop: "20px", height: "35px",}}
+        sx={{paddingTop: "10px", height: "45px",}}
         />
         <Box
           onClick={() => navigate("/")}
@@ -117,7 +118,7 @@ const Notification = () => {
           cursor: "pointer",
         }}
       >
-        notification
+        Highlights
       </Box>
     </Grid>
   );

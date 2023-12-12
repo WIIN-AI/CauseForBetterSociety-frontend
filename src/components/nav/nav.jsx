@@ -1,13 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import {loginDetails} from './../../components/loginDetails'
+
 
 const Navbar = () => {
+  const login  = loginDetails.login
+
   return (
     <nav
       className="flex center"
       style={{
         justifyContent: "space-between",
-        padding: "0 0 0 30px",
+        padding: "0 30px",
         height: "50px",
         border: "1px solid #e2e2e2",
         backgroundColor: "#ffffff90",
@@ -20,15 +24,15 @@ const Navbar = () => {
       }}
     >
       <Link className="link" to={"/"}>
-        <div className="font-800 medium">CFBS</div>
+        <div className="font-800 medium">C.F.B.S</div>
       </Link>
-      <div style={{ paddingRight: "50px" }}>
-        <button className="button">sign in</button>
-        <button className="button">sign up</button>
+      <div>
+        {!login && <button className="button">sign in</button>}
+        {!login && <button className="button">sign up</button>}
 
-        <Link className="link" to={"/create"}>
+        {login && <Link className="link" to={"/create"}>
           <button className="button">write</button>
-        </Link>
+        </Link>}
         
       </div>
     </nav>
