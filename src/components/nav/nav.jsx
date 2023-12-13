@@ -9,7 +9,7 @@ const Navbar = () => {
   
   const login  = loginDetails.login
   const navigation = useNavigate()
-  const matches = useMediaQuery('(min-width:600px)');
+  const matches = useMediaQuery('(min-width:900px)');
   const [open, setOpen] = useState(false);
 
   return (

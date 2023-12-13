@@ -16,40 +16,53 @@ const CreatePost = () => {
   const [subject, setSubject] = useState("");
   const [story, setStory] = useState("");
 
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState();
+  const [imageValue, setImageValue] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
 
   function onImageChange(e) {
-    setImage(e.target.value);
+    setImageValue(e.target.value)
+    setImage(e.target.files[0]);
+    console.log(e.target.value)
     const imageFile = e.target.files[0];
     const imageURL = URL.createObjectURL(imageFile);
     setImageUrl(imageURL);
   }
 
+
+
+
   function reset() {
-    setImage("");
+    setImage();
     setImageUrl(null);
     setSubject("");
     setStory("");
+    setImageValue('')
   }
 
-  const submit = function () {
+  const submit = function (event) {
+
+    event.preventDefault()
+
+    var formData = new FormData();
+    formData.append('description', story);
+    formData.append('file', image, imageValue);
+    
     fetch(`${process.env.REACT_APP_API}/add_image/`, {
       method: "POST",
       // credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        file: image,
-        description: story,
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: formData,
+      dataType: "jsonp"
     })
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
         navigate("/");
       })
-      .catch((err) => alert(err));
+      .catch((err) => alert("error : ", err));
   };
+
 
   return (
     <Container maxWidth="md">
@@ -86,7 +99,7 @@ const CreatePost = () => {
               fullWidth
               required
               type="file"
-              value={image}
+              value={imageValue}
               accept="image/*"
               onChange={onImageChange}
               sx={{
