@@ -12,6 +12,8 @@ import ClearedIssues from "./pages/clearIssues";
 import Profile from "./pages/profile";
 import SavedPost from "./pages/SavedPost";
 import MyArticles from "./pages/yourArticle";
+import SignIn from "./pages/signin";
+import SignUp from "./pages/signup";
 
 function App() {
   return (
@@ -29,6 +31,9 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/clearedissues" element={<ClearedIssues />} />
           <Route path="/profile" element={<Profile />} />
+
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
 
           <Route path="*" element={<NoPage />} />
         </Routes>

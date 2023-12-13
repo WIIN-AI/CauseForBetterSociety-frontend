@@ -13,7 +13,7 @@ const Comments = ({data, open = false, setOpen }) => {
         onClose={() => setOpen(false)}
         onOpen={() => setOpen(false)}
       >
-        <Box p={3} sx={{width: "35vh" ,height: "100vh" }} role="presentation">
+        <Box p={3} sx={{width: "35vh", height: "100vh" }} role="presentation">
           <Box textAlign={"left"}>
             <p className="sub-heading font-600 center">
               Comments

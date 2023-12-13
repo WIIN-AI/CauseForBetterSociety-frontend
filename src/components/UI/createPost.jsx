@@ -10,7 +10,7 @@ const CreatePost = () => {
 
   useEffect(()=>{
     !login && navigate('/')
-  },[])
+  },[login ,navigate])
 
 
   const [subject, setSubject] = useState("");
