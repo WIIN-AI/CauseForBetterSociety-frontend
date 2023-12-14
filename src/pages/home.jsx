@@ -13,7 +13,7 @@ const Home = () => {
   const matches = useMediaQuery('(min-width:900px)');
 
   return (
-    <Grid mt={8} marginX={1} className="flex">
+    <Grid mt={8} mb={2} marginX={1} className="flex">
       <Grid container lg={8} md={12} item>
         {pending && <Loader/>}
         {timelineCardData.map((data, i) => <TimelineCard key={i} data={data} id={i} />)}

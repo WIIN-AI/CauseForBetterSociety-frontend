@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
@@ -51,6 +51,7 @@ const TimelineCard = ({ data, id }) => {
     setOpenShareLink(true);
   };
 
+
   return (
     <Box
       className="bg-primary"
@@ -67,13 +68,13 @@ const TimelineCard = ({ data, id }) => {
     >
       <Box className="flex">
           <img
-            onClick={() => navigate(`/post/${id}`)}
+            onClick={() => navigate(`/post/${data.filename}`)}
             style={{ height: "127px", width: "127px", borderRadius: 3 }}
             src="https://img.freepik.com/free-photo/sunset-time-tropical-beach-sea-with-coconut-palm-tree_74190-1075.jpg"
             alt="sunset"
           />
         <Box className="flex" flexDirection={"column"}>
-          <div onClick={() => navigate(`/post/${id}`)} style={{ padding: "0 20px", textAlign: "left" }}>
+          <div onClick={() => navigate(`/post/${data.filename}`)} style={{ padding: "0 20px", textAlign: "left" }}>
             <p style={{ marginBottom: "5px" }} className="regular">
               Published in 20th nov
             </p>

@@ -1,7 +1,7 @@
 import { Box, Stack } from "@mui/material";
 import React from "react";
 
-const Comment = () => {
+const Comment = ({data=[]}) => {
   return (
     <Box
       bgcolor="#f3f3f3"
@@ -21,7 +21,7 @@ const Comment = () => {
         <p style={{ opacity: "80%" }}>Sagar</p>
         <p style={{ opacity: "80%" }}>14-12-2023</p>
       </Stack>
-      <p className="regular font-400">nice post very nice . . .  </p>
+      <p className="regular font-400">{data}</p>
     </Box>
   );
 };
