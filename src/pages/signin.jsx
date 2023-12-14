@@ -1,7 +1,7 @@
 import { Box, Container, Paper, TextField } from "@mui/material";
 import React, { useEffect } from "react";
 import GoogleIcon from '@mui/icons-material/Google';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useHistory } from "react-router-dom";
 import { loginDetails } from "../components/loginDetails";
 
 const SignIn = () => {
@@ -49,8 +49,8 @@ const SignIn = () => {
               <button type="submit" className="button">
                 sign in
               </button>
-              <button type="button" onClick={'reset'} className="reset">
-                sign up
+              <button onClick={()=>navigate(-1)} type="button" className="reset">
+                back
               </button>
             </Box>
             <Box mt={8}>

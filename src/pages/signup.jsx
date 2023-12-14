@@ -72,6 +72,9 @@ const SignUp = () => {
               <button type="submit" className="button">
                 Submit
               </button>
+              <button onClick={()=>navigate(-1)} type="button" className="reset">
+                back
+              </button>
             </Box>
             <p>or</p>
             <Box mt={1} mb={1}>

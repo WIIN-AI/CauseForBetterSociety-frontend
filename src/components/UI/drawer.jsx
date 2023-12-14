@@ -1,8 +1,10 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import { useNavigate } from "react-router";
 
 export default function Drawer({ open = false, setOpen }) {
+  const navigate = useNavigate()
   return (
     <>
       <SwipeableDrawer
@@ -18,8 +20,8 @@ export default function Drawer({ open = false, setOpen }) {
             </p>
             <br />
             <br />  
-            <button className="button">sign in</button>
-            <button className="button">sign up</button>
+            <button onClick={()=>navigate('/signin')} className="button">sign in</button>
+            <button onClick={()=>navigate('/signup')} className="button">sign up</button>
           </Box>
         </Box>
       </SwipeableDrawer>

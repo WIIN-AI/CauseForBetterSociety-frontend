@@ -61,10 +61,6 @@ const CreatePost = () => {
     }
   }
 
-   
-  
-
-
   return (
     <Container maxWidth="md">
       <Box className="center text-center" mt={8}>

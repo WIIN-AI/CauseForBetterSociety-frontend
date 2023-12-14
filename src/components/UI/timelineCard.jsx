@@ -86,7 +86,7 @@ const TimelineCard = ({ data, id }) => {
             <br />
 
 
-            <Box pl={3} className="flex center">
+            <Box pl={3} className="flex center" zIndex={99}>
               <div>
                 {like ? (
                   <FavoriteIcon

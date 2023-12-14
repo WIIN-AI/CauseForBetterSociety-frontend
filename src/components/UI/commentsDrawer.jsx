@@ -5,8 +5,10 @@ import { TextField } from "@mui/material";
 import Comment from "./comment";
 import { useEffect } from "react";
 import { useState } from "react";
+import { loginDetails } from "../loginDetails";
 
 const Comments = ({ data, open = false, setOpen }) => {
+  const login = loginDetails.login;
   const [comment, setComment] = useState([]);
 
   const [writeComment, setWriteComment] = useState("");
@@ -68,30 +70,32 @@ const Comments = ({ data, open = false, setOpen }) => {
         onOpen={() => setOpen(false)}
       >
         <Box p={3} sx={{ width: "35vh", height: "100vh" }} role="presentation">
-          <form onSubmit={sendComment}>
-            <Box textAlign={"left"}>
-              <p className="sub-heading font-600 center">Comments</p>
-              <p>{data.description}</p>
-              <TextField
-                fullWidth
-                required
-                id="outlined-multiline-static"
-                multiline
-                rows={4}
-                placeholder="write your comment here"
-                value={writeComment}
-                onChange={(e) => setWriteComment(e.target.value)}
-                sx={{
-                  marginTop: 1,
-                }}
-              />
-            </Box>
-            <Box mt={1} textAlign={"right"}>
-              <button type="submit" className="button">
-                send
-              </button>
-            </Box>
-          </form>
+          <p className="sub-heading font-600 center">Comments</p><br/>
+          <p>{data.description}</p>
+          {login && (
+            <form onSubmit={sendComment}>
+              <Box textAlign={"left"}>
+                <TextField
+                  fullWidth
+                  required
+                  id="outlined-multiline-static"
+                  multiline
+                  rows={4}
+                  placeholder="write your comment here"
+                  value={writeComment}
+                  onChange={(e) => setWriteComment(e.target.value)}
+                  sx={{
+                    marginTop: 1,
+                  }}
+                />
+              </Box>
+              <Box mt={1} textAlign={"right"}>
+                <button type="submit" className="button">
+                  send
+                </button>
+              </Box>
+            </form>
+          )}
           {comment.map((data) => (
             <Comment data={data} />
           ))}
