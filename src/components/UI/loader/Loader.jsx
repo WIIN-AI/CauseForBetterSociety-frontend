@@ -1,9 +1,12 @@
 import React from "react";
 import styles from "./loader.module.css";
+import { Box, Container } from "@mui/material";
 
 const Loader = () => {
   return (
-      <div className={styles.loader}></div>
+    <Container maxWidth="sm">
+      <Box className={styles.loader} m={20} />
+    </Container>
   );
 };
 

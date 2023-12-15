@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
@@ -10,6 +10,10 @@ import Drawer from "./drawer";
 import CommentDrawer from "./commentsDrawer";
 import Dialog from "./Dialog";
 import { useNavigate } from "react-router";
+import {loginDetails} from './../../components/loginDetails'
+import useMediaQuery from '@mui/material/useMediaQuery';
+
+
 
 const TimelineCard = ({ data, id }) => {
   const [like, setLike] = useState(false);
@@ -18,9 +22,10 @@ const TimelineCard = ({ data, id }) => {
   const [openComment, setOpenComment] = useState(false);
   const [openShareLink, setOpenShareLink] = useState(false);
 
-  const navigate = useNavigate();
+  const matches = useMediaQuery('(min-width:900px)');
 
-  const login = false;
+  const navigate = useNavigate();
+  const login  = loginDetails.login
 
   const getLike = function () {
     if (login) {
@@ -46,6 +51,7 @@ const TimelineCard = ({ data, id }) => {
     setOpenShareLink(true);
   };
 
+
   return (
     <Box
       className="bg-primary"
@@ -54,6 +60,7 @@ const TimelineCard = ({ data, id }) => {
         margin: "5px 0",
         borderRadius: "5px",
         width: "100%",
+        height: "135px",
         position: "relative",
         border: "2px solid #00000020",
         padding: 2,
@@ -61,17 +68,17 @@ const TimelineCard = ({ data, id }) => {
     >
       <Box className="flex">
           <img
-            onClick={() => navigate(`/post/${id}`)}
-            style={{ height: "120px", width: "120px", borderRadius: 3 }}
+            onClick={() => navigate(`/post/${data.filename}`)}
+            style={{ height: "127px", width: "127px", borderRadius: 3 }}
             src="https://img.freepik.com/free-photo/sunset-time-tropical-beach-sea-with-coconut-palm-tree_74190-1075.jpg"
             alt="sunset"
           />
         <Box className="flex" flexDirection={"column"}>
-          <div onClick={() => navigate(`/post/${id}`)} style={{ padding: "0 20px", textAlign: "left" }}>
+          <div onClick={() => navigate(`/post/${data.filename}`)} style={{ padding: "0 20px", textAlign: "left" }}>
             <p style={{ marginBottom: "5px" }} className="regular">
               Published in 20th nov
             </p>
-            <p className="medium font-600" style={{ marginBottom: "2px" }}>
+            <p className= {`font-600 ${!matches? 'regular' : 'medium'}`} style={{ marginBottom: "2px" }}>
               Something is wrong with this light
             </p>
             <p className="text-warp regular font-300">{data.description}</p>
@@ -79,12 +86,13 @@ const TimelineCard = ({ data, id }) => {
             <br />
 
 
-            <Box pl={3} className="flex center">
+            <Box pl={3} className="flex center" zIndex={99}>
               <div>
                 {like ? (
                   <FavoriteIcon
                     onClick={getLike}
-                    style={{ margin: "0px 5px 5px 0" }}
+                    color="error"
+                    style={{ margin: "0px 10px 5px 0" }}
                   />
                 ) : (
                   <FavoriteBorderIcon

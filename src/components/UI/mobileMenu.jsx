@@ -1,17 +1,30 @@
-import { Box, Grid, InputAdornment, TextField } from "@mui/material";
-import React from "react";
-import { useNavigate } from "react-router";
+import { Box, InputAdornment, SwipeableDrawer, TextField } from '@mui/material'
+import React from 'react'
+import { useNavigate } from 'react-router';
+import { loginDetails } from '../loginDetails';
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
 import SearchIcon from '@mui/icons-material/Search';
-import {loginDetails} from './../../components/loginDetails'
 
-const Notification = () => {
+const MobileMenu = ({open = false, setOpen }) => {
+
   const navigate = useNavigate();
-  const login  = loginDetails.login
-  
+  const login  = loginDetails.login;
+
   return (
-    <Grid lg={12} container item>
-      <Box
+    <>
+    <SwipeableDrawer
+      anchor={"right"}
+      open={open}
+      onClose={() => setOpen(false)}
+      onOpen={() => setOpen(false)}
+    >
+      <Box p={1} sx={{width: "35vh", height: "100vh" }} role="presentation">
+        {!login && <Box flex={'row'} textAlign={"center"} sx={{padding: "15px 5px"}}>
+          <button onClick={()=> navigate('/signin')} className="button">sign in</button>
+          <button onClick={()=> navigate('/signup')} className="button">sign up</button>
+        </Box>}
+        <Box textAlign={"left"}>
+        <Box
         textAlign={"center"}
         width={"100%"}
         borderRadius={"2px"}
@@ -25,7 +38,7 @@ const Notification = () => {
         Menu
       </Box>
   
-      <Box textAlign={"left"} width={"100%"} pl={1} pr={1}>
+      <Box textAlign={"left"} width={"100%"}>
         <TextField size="small" id="standard-basic" fullWidth placeholder="Search by location"
           InputProps={{
             startAdornment: (
@@ -57,6 +70,7 @@ const Notification = () => {
         >
           Cleared issues
         </Box>
+        
         {login && <Box
           onClick={() => navigate("/profile")}
           sx={{
@@ -106,22 +120,11 @@ const Notification = () => {
           Sign out
         </Box>}
       </Box>
-      <Box
-        textAlign={"center"}
-        width={"100%"}
-        borderRadius={"2px"}
-        mb={1}
-        p={1}
-        bgcolor={"black"}
-        color={"white"}
-        sx={{
-          cursor: "pointer",
-        }}
-      >
-        Notification
+        </Box>
       </Box>
-    </Grid>
-  );
-};
+    </SwipeableDrawer>
+  </>
+  )
+}
 
-export default Notification;
+export default MobileMenu

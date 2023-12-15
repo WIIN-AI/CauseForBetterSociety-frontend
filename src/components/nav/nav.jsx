@@ -1,13 +1,24 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {loginDetails} from './../../components/loginDetails'
+import MenuIcon from '@mui/icons-material/Menu';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import MobileMenu from "../UI/mobileMenu";
 
 const Navbar = () => {
+  
+  const login  = loginDetails.login
+  const navigation = useNavigate()
+  const matches = useMediaQuery('(min-width:900px)');
+  const [open, setOpen] = useState(false);
+
   return (
     <nav
       className="flex center"
       style={{
         justifyContent: "space-between",
-        padding: "0 0 0 30px",
+        boxSizing: "border-box",
+        padding: "0 30px",
         height: "50px",
         border: "1px solid #e2e2e2",
         backgroundColor: "#ffffff90",
@@ -19,18 +30,14 @@ const Navbar = () => {
         top: 0,
       }}
     >
-      <Link className="link" to={"/"}>
-        <div className="font-800 medium">CFBS</div>
-      </Link>
-      <div style={{ paddingRight: "50px" }}>
-        <button className="button">sign in</button>
-        <button className="button">sign up</button>
-
-        <Link className="link" to={"/create"}>
-          <button className="button">Create</button>
-        </Link>
-        
+      <Link className="link" to={'/'}><div className="font-800 medium">C.F.B.S</div></Link>
+      <div className="center flex">
+        {matches && !login && <button onClick={()=> navigation('/signin')} className="button">sign in</button>}
+        {matches && !login && <button onClick={()=> navigation('/signup')} className="button">sign up</button>}
+        {login && <button onClick={()=> navigation('/create')} className="button">write</button>}       
+        {!matches && <MenuIcon onClick={()=>setOpen(true)} fontSize="large"/>}
       </div>
+      <MobileMenu open={open} setOpen={setOpen}/>
     </nav>
   );
 };

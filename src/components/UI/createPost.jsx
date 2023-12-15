@@ -1,47 +1,65 @@
 import { Box, Container, TextField } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {loginDetails} from './../../components/loginDetails'
 
 const CreatePost = () => {
   const navigate = useNavigate();
 
+  const login  = loginDetails.login
+
+  useEffect(()=>{
+    !login && navigate('/')
+  },[login ,navigate])
+
+
   const [subject, setSubject] = useState("");
   const [story, setStory] = useState("");
 
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState();
+  const [imageValue, setImageValue] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
 
   function onImageChange(e) {
-    setImage(e.target.value);
+    setImageValue(e.target.value)
+    setImage(e.target.files[0]);
     const imageFile = e.target.files[0];
     const imageURL = URL.createObjectURL(imageFile);
     setImageUrl(imageURL);
   }
 
+
   function reset() {
-    setImage("");
+    setImage();
     setImageUrl(null);
     setSubject("");
     setStory("");
+    setImageValue('')
   }
 
-  const submit = function () {
-    fetch(`${process.env.REACT_APP_API}/add_image/`, {
-      method: "POST",
-      // credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        file: image,
-        description: story,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        navigate("/");
-      })
-      .catch((err) => alert(err));
-  };
+
+  const submit = async function (event) {
+
+    event.preventDefault()
+    const formData = new FormData();
+    formData.append('file', image);
+    formData.append('description', story);
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API}/add_image/`, {
+        method: "POST",
+        body: formData,
+      });
+      const result = await response.json();
+      console.log("Success:", result);
+      alert(result.message)
+      reset()
+      navigate('/')
+    } 
+    catch (error) {
+      console.error("Error:", error);
+    }
+  }
 
   return (
     <Container maxWidth="md">
@@ -68,21 +86,21 @@ const CreatePost = () => {
               onChange={(e) => setSubject(e.target.value)}
               placeholder="write here"
               sx={{
-                margin: "0 0 10px",
+                margin: "5px 0",
               }}
             />
 
-            {imageUrl !== null && <img src={imageUrl} alt="image_preview" />}
+            {imageUrl !== null && <img style={{height: '200px'}} src={imageUrl} alt="image_preview" />}
 
             <TextField
               fullWidth
               required
               type="file"
-              value={image}
+              value={imageValue}
               accept="image/*"
               onChange={onImageChange}
               sx={{
-                margin: "0 0 10px",
+                margin: "5px 0",
               }}
             />
 
@@ -96,6 +114,9 @@ const CreatePost = () => {
               placeholder="write here"
               value={story}
               onChange={(e) => setStory(e.target.value)}
+              sx={{
+                margin: "5px 0",
+              }}
             />
 
             <Box mt={2}>

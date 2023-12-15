@@ -11,19 +11,19 @@ import CommentSection from "./commentSection";
 import Dialog from "./Dialog";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useParams } from "react-router";
+import {loginDetails} from './../../components/loginDetails'
+
 
 const PostDetails = () => {
   const { id } = useParams("");
-  const myRef = useRef(null);
-  const path = window.location.pathname;
-  console.log(path);
+  const myRef = useRef(null);  
+
   const [inputText] = useState("");
 
   const [paragraphs, setParagraphs] = useState([]);
   const [like, setLike] = useState(false);
   const [save, setSave] = useState(false);
   const [open, setOpen] = useState(false);
-  const [openComment, setOpenComment] = useState(false);
   const [openShareLink, setOpenShareLink] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -42,7 +42,7 @@ const PostDetails = () => {
     setParagraphs(formattedParagraphs);
   }, [inputText]);
 
-  const login = false;
+  const login  = loginDetails.login
 
   const getLike = function () {
     if (login) {
@@ -109,7 +109,7 @@ const PostDetails = () => {
             }}
           >
             {like ? (
-              <FavoriteIcon onClick={getLike} />
+              <FavoriteIcon color="error" onClick={getLike} />
             ) : (
               <FavoriteBorderIcon onClick={getLike} />
             )}
@@ -142,11 +142,11 @@ const PostDetails = () => {
           />
           <br />
           {paragraphs.map((paragraph) => (
-            <p className="font-400 text-left text-justified" key={paragraph}>
+            <p className="medium font-400 text-left text-justified" key={paragraph}>
               {paragraph}
             </p>
           ))}
-          <p className="medium font-400 text-left text-justified">
+          {/* <p className="medium font-400 text-left text-justified">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua. Lacus
             sed viverra tellus in hac habitasse platea. Turpis egestas maecenas
@@ -198,12 +198,12 @@ const PostDetails = () => {
             rutrum quisque non tellus. Eget magna fermentum iaculis eu non diam.
             Venenatis a condimentum vitae sapien pellentesque. Porttitor rhoncus
             dolor purus non enim praesent elementum facilisis.
-          </p>
+          </p> */}
         </Box>
       </Box>
       <Divider ref={myRef} style={{ marginBottom: "50px" }} />
       <Drawer open={open} setOpen={setOpen} />
-      <CommentSection />
+      <CommentSection id={id} />
       <Dialog setOpenShareLink={setOpenShareLink} openShareLink={openShareLink}>
         {window.location.href}
       </Dialog>
