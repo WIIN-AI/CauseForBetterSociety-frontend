@@ -4,10 +4,12 @@ import { useNavigate } from "react-router";
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
 import SearchIcon from '@mui/icons-material/Search';
 import {loginDetails} from './../../components/loginDetails'
+import { googleLogout } from '@react-oauth/google';
 
 const Notification = () => {
   const navigate = useNavigate();
   const login  = loginDetails.login
+  
   
   return (
     <Grid lg={12} container item>
@@ -98,7 +100,7 @@ const Notification = () => {
           Contact us
         </Box>
         {login && <Box
-          onClick={() => navigate("/out")}
+          onClick={() => googleLogout()}
           sx={{
             cursor: "pointer", borderBottom : "1px solid #e2e2e2", padding: "15px 5px"
           }}

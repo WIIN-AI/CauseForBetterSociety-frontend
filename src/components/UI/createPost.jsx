@@ -1,4 +1,4 @@
-import { Box, Container, TextField } from "@mui/material";
+import { Box, Container, FormControl, InputLabel, MenuItem, Select, Stack, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {loginDetails} from './../../components/loginDetails'
@@ -15,6 +15,8 @@ const CreatePost = () => {
 
   const [subject, setSubject] = useState("");
   const [story, setStory] = useState("");
+  const [location, setLocation] = useState("");
+  const [userVisiblity, setUserVisiblity] = useState('');
 
   const [image, setImage] = useState();
   const [imageValue, setImageValue] = useState("");
@@ -35,6 +37,8 @@ const CreatePost = () => {
     setSubject("");
     setStory("");
     setImageValue('')
+    setUserVisiblity('')
+    setLocation('')
   }
 
 
@@ -43,10 +47,8 @@ const CreatePost = () => {
     event.preventDefault()
     const formData = new FormData();
     formData.append('file', image);
-    formData.append('description', story);
-
     try {
-      const response = await fetch(`${process.env.REACT_APP_API}/add_image/`, {
+      const response = await fetch(`${process.env.REACT_APP_API}/add_image/?heading=${subject}&description=${story}&user_visibility=${userVisiblity}&location=${location}'`, {
         method: "POST",
         body: formData,
       });
@@ -81,7 +83,7 @@ const CreatePost = () => {
             <TextField
               fullWidth
               required
-              label="subject"
+              label="heading"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="write here"
@@ -91,7 +93,11 @@ const CreatePost = () => {
             />
 
             {imageUrl !== null && <img style={{height: '200px'}} src={imageUrl} alt="image_preview" />}
-
+            <Stack direction="row" spacing={1}
+              sx={{
+                margin: "5px 0",
+              }}
+            >
             <TextField
               fullWidth
               required
@@ -99,10 +105,28 @@ const CreatePost = () => {
               value={imageValue}
               accept="image/*"
               onChange={onImageChange}
-              sx={{
-                margin: "5px 0",
-              }}
             />
+             <TextField
+              fullWidth
+              required
+              label="location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="text here"
+            />
+            <FormControl fullWidth >
+            <InputLabel id="demo-simple-select-label">User visiblity</InputLabel>
+              <Select
+                value={userVisiblity}
+                label="User visiblity"
+                onChange={(e)=> setUserVisiblity(e.target.value)}
+                required
+              >
+                <MenuItem value={true}>on</MenuItem>
+                <MenuItem value={false}>off</MenuItem>
+              </Select>
+              </FormControl>
+              </Stack>
 
             <TextField
               fullWidth

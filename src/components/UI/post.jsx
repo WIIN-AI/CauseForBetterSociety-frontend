@@ -1,4 +1,4 @@
-import { Box, Container, Divider, Menu, MenuItem } from "@mui/material";
+import { Box, Container, Divider, Menu, MenuItem, Typography } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -7,40 +7,54 @@ import ShareIcon from "@mui/icons-material/Share";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import Drawer from "./drawer";
-import CommentSection from "./commentSection";
+import RequestSection from "./requestSection";
 import Dialog from "./Dialog";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useParams } from "react-router";
 import {loginDetails} from './../../components/loginDetails'
+import CommentDrawer from "./commentsDrawer";
 
 
-const PostDetails = () => {
+
+const PostDetails = ({openComment, setOpenComment}) => {
   const { id } = useParams("");
   const myRef = useRef(null);  
 
-  const [inputText] = useState("");
 
-  const [paragraphs, setParagraphs] = useState([]);
   const [like, setLike] = useState(false);
   const [save, setSave] = useState(false);
   const [open, setOpen] = useState(false);
   const [openShareLink, setOpenShareLink] = useState(false);
+  const [data, setData]= useState([])
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const moreOpen = Boolean(anchorEl);
-
+  const moreOpen = Boolean(anchorEl);  
+  
   useEffect(() => {
-    const splitParagraphs = inputText.split("\n\n");
-    // Apply optional formatting
-    const formattedParagraphs = splitParagraphs.map((paragraph) => {
-      // Add line breaks after each sentence
-      paragraph = paragraph.replace(/\. /g, ".\n");
-      // Indent first line
-      paragraph = paragraph.replace(/\n/g, "\n  ");
-      return paragraph;
-    });
-    setParagraphs(formattedParagraphs);
-  }, [inputText]);
+    async function fetchData(){
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API}/get_single_incident_details?image_id=${id}`, {
+        method: "GET",
+        // credentials: "include",
+        headers: { "Content-Type": "application/json" },
+      })
+      const result = await response.json();
+      console.log("Success:", result);
+      setData(result)
+      // const getParagraphs = result.description.replace(/\n/g, '\n')
+      // const spiltLine = getParagraphs.split('\n')
+      // console.log(spiltLine)
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+  fetchData()
+  }, [id]);
+
+
+
+
 
   const login  = loginDetails.login
 
@@ -53,7 +67,7 @@ const PostDetails = () => {
   };
 
   const getComments = function () {
-    myRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    setOpenComment(true)
   };
 
   const getSave = function () {
@@ -71,15 +85,35 @@ const PostDetails = () => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  
   const handleClose = () => {
     setAnchorEl(null);
   };
 
+  function ChatBubbleWithText({children, onClick }) {
+    return (
+      <div onClick={onClick} className="flex">
+        <ChatBubbleOutlineIcon />
+        <Typography ml={1}>{children}</Typography>
+      </div>
+    );
+  }
+
+  function LikeWithText({children, onClick }) {
+    return (
+      <div onClick={onClick} className="flex">
+        {like ? ( <FavoriteIcon color="error" onClick={getLike} /> ) : (<FavoriteBorderIcon onClick={getLike} />)}
+        <Typography ml={1}>{children}</Typography>
+      </div>
+    );
+  }
+  
+
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" style={{ padding : "0 100px"}}>
       <Box mt={8} mb={8}>
         <Box>
-          <p className="heading font-700">Post Heading</p>
+          <p className="heading font-700">{data.heading}</p>
           <br />
           <Box className="flex center" justifyContent={"space-between"}>
             <p className="font-500">Sharan Murthi</p>
@@ -92,7 +126,7 @@ const PostDetails = () => {
                 pending
               </span>
             </p>
-            <p>Telanagana, Karimnagar</p>
+            <p>{data.location}</p>
           </Box>
           <br />
           <Box
@@ -108,18 +142,10 @@ const PostDetails = () => {
               borderStyle: "solid hidden",
             }}
           >
-            {like ? (
-              <FavoriteIcon color="error" onClick={getLike} />
-            ) : (
-              <FavoriteBorderIcon onClick={getLike} />
-            )}
-            <ChatBubbleOutlineIcon onClick={getComments} />
+            <LikeWithText>{data.comments?.length > 0 ? data.comments?.length : "" }</LikeWithText>
+            <ChatBubbleWithText onClick={getComments}>{data.comments?.length > 0 ? data.comments?.length : "" }</ChatBubbleWithText>
             <ShareIcon onClick={shareLink} />
-            {save ? (
-              <BookmarkIcon onClick={getSave} />
-            ) : (
-              <BookmarkBorderIcon onClick={getSave} />
-            )}
+            {save ? (<BookmarkIcon onClick={getSave} />) : (<BookmarkBorderIcon onClick={getSave} />)}
             <MoreHorizIcon onClick={handleClick} />
             <Menu
               id="basic-menu"
@@ -135,75 +161,27 @@ const PostDetails = () => {
           <img
             width={"100%"}
             src="https://i.pinimg.com/originals/cf/e8/5e/cfe85ed3a39d1bcb65b5da5c4f75b363.jpg"
-            alt=""
+            alt="post_image"
             style={{
               marginBottom: "20px",
             }}
           />
           <br />
-          {paragraphs.map((paragraph) => (
-            <p className="medium font-400 text-left text-justified" key={paragraph}>
+          {/* {data['description'].map((paragraph) => (
+            <>
+            <p className="medium font-400" key={paragraph}>
               {paragraph}
-            </p>
-          ))}
-          {/* <p className="medium font-400 text-left text-justified">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Lacus
-            sed viverra tellus in hac habitasse platea. Turpis egestas maecenas
-            pharetra convallis posuere morbi leo. Sit amet nulla facilisi morbi
-            tempus iaculis urna id volutpat. Netus et malesuada fames ac turpis
-            egestas sed tempus. Sit amet mauris commodo quis imperdiet massa
-            tincidunt. Mi quis hendrerit dolor magna eget. Egestas egestas
-            fringilla phasellus faucibus. Faucibus et molestie ac feugiat sed
-            lectus. Dictum fusce ut placerat orci nulla pellentesque. Mus mauris
-            vitae ultricies leo integer malesuada nunc vel. Tellus elementum
-            sagittis vitae et. At tempor commodo ullamcorper a. Auctor eu augue
-            ut lectus. Cum sociis natoque penatibus et. Sollicitudin ac orci
-            phasellus egestas tellus rutrum tellus pellentesque. Molestie a
-            iaculis at erat pellentesque adipiscing. Orci phasellus egestas
-            tellus rutrum tellus. Ultrices in iaculis nunc sed augue lacus
-            viverra. Sem integer vitae justo eget magna fermentum iaculis eu
-            non. Leo vel fringilla est ullamcorper eget. Iaculis eu non diam
-            phasellus vestibulum lorem sed risus. Pretium lectus quam id leo in
-            vitae turpis. Ut porttitor leo a diam sollicitudin. Fames ac turpis
-            egestas integer eget aliquet nibh praesent tristique. Sed risus
-            ultricies tristique nulla aliquet enim tortor at auctor. Quis
-            eleifend quam adipiscing vitae. Odio eu feugiat pretium nibh ipsum
-            consequat nisl vel pretium. Vestibulum mattis ullamcorper velit sed
-            ullamcorper morbi tincidunt. Nec feugiat in fermentum posuere urna.
-            Mi quis hendrerit dolor magna eget est lorem. Ac turpis egestas
-            integer eget aliquet nibh praesent. Ut tortor pretium viverra
-            suspendisse potenti nullam. Justo eget magna fermentum iaculis.
-            Curabitur gravida arcu ac tortor dignissim convallis. Porta nibh
-            venenatis cras sed felis eget velit aliquet sagittis. Sed id semper
-            risus in hendrerit. Malesuada nunc vel risus commodo viverra. Mattis
-            ullamcorper velit sed ullamcorper morbi. Hac habitasse platea
-            dictumst quisque. Quisque non tellus orci ac auctor augue mauris.
-            Tristique et egestas quis ipsum. Eleifend donec pretium vulputate
-            sapien nec sagittis aliquam malesuada. Fames ac turpis egestas
-            integer eget aliquet. Amet venenatis urna cursus eget nunc
-            scelerisque viverra mauris in. Quis varius quam quisque id diam vel
-            quam elementum pulvinar. Varius vel pharetra vel turpis nunc eget
-            lorem dolor. Eget aliquet nibh praesent tristique magna sit amet.
-            Aliquet enim tortor at auctor urna nunc id. At ultrices mi tempus
-            imperdiet nulla malesuada pellentesque elit eget. Mattis
-            pellentesque id nibh tortor id. Turpis egestas pretium aenean
-            pharetra magna ac. Mi sit amet mauris commodo. Tortor dignissim
-            convallis aenean et tortor at risus. Justo eget magna fermentum
-            iaculis eu non diam. Odio aenean sed adipiscing diam donec
-            adipiscing tristique risus. Suspendisse ultrices gravida dictum
-            fusce ut. Suspendisse in est ante in. Metus vulputate eu scelerisque
-            felis imperdiet proin fermentum. In tellus integer feugiat
-            scelerisque varius morbi enim nunc faucibus. In hendrerit gravida
-            rutrum quisque non tellus. Eget magna fermentum iaculis eu non diam.
-            Venenatis a condimentum vitae sapien pellentesque. Porttitor rhoncus
-            dolor purus non enim praesent elementum facilisis.
-          </p> */}
+            </p><br/>
+            </>
+          ))} */}
+          <p className="medium font-400 text-justified">{data.description}</p>
+          <br/>
         </Box>
       </Box>
-      <Divider ref={myRef} style={{ marginBottom: "50px" }} />
+      <Divider style={{ marginBottom: "50px" }} />
       <Drawer open={open} setOpen={setOpen} />
-      <CommentSection id={id} />
+      <CommentDrawer data={id} open={openComment} setOpen={setOpenComment} />
+      <RequestSection id={id} />
       <Dialog setOpenShareLink={setOpenShareLink} openShareLink={openShareLink}>
         {window.location.href}
       </Dialog>

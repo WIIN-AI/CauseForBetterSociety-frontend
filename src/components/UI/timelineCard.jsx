@@ -1,11 +1,11 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ShareIcon from "@mui/icons-material/Share";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import Drawer from "./drawer";
 import CommentDrawer from "./commentsDrawer";
 import Dialog from "./Dialog";
@@ -15,11 +15,10 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 
 
-const TimelineCard = ({ data, id }) => {
+const TimelineCard = ({ setOpenComment, data, id }) => {
   const [like, setLike] = useState(false);
   const [save, setSave] = useState(false);
   const [open, setOpen] = useState(false);
-  const [openComment, setOpenComment] = useState(false);
   const [openShareLink, setOpenShareLink] = useState(false);
 
   const matches = useMediaQuery('(min-width:900px)');
@@ -35,8 +34,13 @@ const TimelineCard = ({ data, id }) => {
     }
   };
 
+
   const getComments = function () {
-      setOpenComment(true);
+    setTimeout(()=>{
+      setOpenComment(true)
+    },300)
+    clearTimeout()
+    navigate(`/post/${data.image_id}`)  
   };
 
   const getSave = function () {
@@ -64,17 +68,19 @@ const TimelineCard = ({ data, id }) => {
         position: "relative",
         border: "2px solid #00000020",
         padding: 2,
+        cursor : "default"
       }}
     >
       <Box className="flex">
           <img
-            onClick={() => navigate(`/post/${data.filename}`)}
+            onClick={() => navigate(`/post/${data.image_id}`)}
             style={{ height: "127px", width: "127px", borderRadius: 3 }}
+            // src={data.filename}
             src="https://img.freepik.com/free-photo/sunset-time-tropical-beach-sea-with-coconut-palm-tree_74190-1075.jpg"
-            alt="sunset"
+            alt={data.filename}
           />
-        <Box className="flex" flexDirection={"column"}>
-          <div onClick={() => navigate(`/post/${data.filename}`)} style={{ padding: "0 20px", textAlign: "left" }}>
+        <Box className="flex" flexDirection={"column"} width={"100%"}>
+          <div onClick={() => navigate(`/post/${data.image_id}`)} style={{ padding: "0 20px", textAlign: "left" }}>
             <p style={{ marginBottom: "5px" }} className="regular">
               Published in 20th nov
             </p>
@@ -86,47 +92,47 @@ const TimelineCard = ({ data, id }) => {
             <br />
 
 
-            <Box pl={3} className="flex center" zIndex={99}>
-              <div>
+            <Stack left={'15vh'} bottom={'1vh'} flexDirection={"row"} justifyContent={"space-between"} position={"absolute"} >
                 {like ? (
                   <FavoriteIcon
                     onClick={getLike}
                     color="error"
-                    style={{ margin: "0px 10px 5px 0" }}
+                    style={{ margin: "0px 10px 5px 0" , display: "flex"}}
                   />
                 ) : (
                   <FavoriteBorderIcon
                     onClick={getLike}
-                    style={{ margin: "0px 10px 5px 0" }}
+                    style={{ margin: "0px 10px 5px 0" , display: "flex" }}
                   />
                 )}
                 <ChatBubbleOutlineIcon
                   onClick={getComments}
-                  style={{ margin: "0px 10px 4px" }}
+                  style={{ margin: "0px 10px 4px", display: "flex" }}
                 />
                 <ShareIcon
                   onClick={shareLink}
-                  style={{ margin: "0px 10px 6px" }}
+                  style={{ margin: "0px 10px 6px", display: "flex" }}
                 />
+          </Stack>
+
+            <Stack right={'1vh'} bottom={'1vh'} flexDirection={"row"} justifyContent={"space-between"} position={"absolute"} >
                 {save ? (
                   <BookmarkIcon
                     onClick={getSave}
-                    style={{ margin: "0px 10px 6px" }}
+                    style={{ margin: "0px 10px 6px", display: "flex" }}
                   />
                 ) : (
                   <BookmarkBorderIcon
                     onClick={getSave}
-                    style={{ margin: "0px 10px 6px" }}
+                    style={{ margin: "0px 10px 6px", display: "flex" }}
                   />
                 )}
-            </div>
-          </Box>
+          </Stack>
         </Box>
       </Box>
       <Drawer open={open} setOpen={setOpen} />
-      <CommentDrawer data={data} open={openComment} setOpen={setOpenComment} />
       <Dialog setOpenShareLink={setOpenShareLink} openShareLink={openShareLink}>
-        {`${window.location.href}post/${id}`}
+        {`${window.location.href}post/${data.image_id}`}
       </Dialog>
     </Box>
   );
