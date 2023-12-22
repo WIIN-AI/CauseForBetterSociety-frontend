@@ -1,4 +1,4 @@
-import { Box, Container, Divider, Menu, MenuItem, Typography } from "@mui/material";
+import { Box, Container, Divider, Menu, MenuItem, Typography, useMediaQuery } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -29,6 +29,10 @@ const PostDetails = ({openComment, setOpenComment}) => {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const moreOpen = Boolean(anchorEl);  
+  const [paragraph, setParagraph] = useState([])
+
+  const matches = useMediaQuery('(min-width:900px)');
+
   
   useEffect(() => {
     async function fetchData(){
@@ -41,9 +45,8 @@ const PostDetails = ({openComment, setOpenComment}) => {
       const result = await response.json();
       console.log("Success:", result);
       setData(result)
-      // const getParagraphs = result.description.replace(/\n/g, '\n')
-      // const spiltLine = getParagraphs.split('\n')
-      // console.log(spiltLine)
+      const spiltLine = result.description.split('<br />')
+      setParagraph(spiltLine)
     }
     catch(error){
       console.log(error)
@@ -110,7 +113,7 @@ const PostDetails = ({openComment, setOpenComment}) => {
   
 
   return (
-    <Container maxWidth="md" style={{ padding : "0 100px"}}>
+    <Container maxWidth="md" style={{ padding : matches && "0 100px"}}>
       <Box mt={8} mb={8}>
         <Box>
           <p className="heading font-700">{data.heading}</p>
@@ -167,14 +170,14 @@ const PostDetails = ({openComment, setOpenComment}) => {
             }}
           />
           <br />
-          {/* {data['description'].map((paragraph) => (
+          {paragraph.map((value, i) => (
             <>
-            <p className="medium font-400" key={paragraph}>
-              {paragraph}
+            <p style={{whiteSpace: "pre-wrap"}} className="medium font-300 text-justified" key={i}>
+              {value}
             </p><br/>
             </>
-          ))} */}
-          <p className="medium font-400 text-justified">{data.description}</p>
+          ))}
+          {/* <p className="medium font-400 text-justified" >{data.description}</p> */}
           <br/>
         </Box>
       </Box>

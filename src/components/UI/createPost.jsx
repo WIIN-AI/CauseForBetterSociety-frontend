@@ -48,7 +48,7 @@ const CreatePost = () => {
     const formData = new FormData();
     formData.append('file', image);
     try {
-      const response = await fetch(`${process.env.REACT_APP_API}/add_image/?heading=${subject}&description=${story}&user_visibility=${userVisiblity}&location=${location}'`, {
+      const response = await fetch(`${process.env.REACT_APP_API}/add_image/?heading=${subject}&description=${story.replace(/\n/g, "<br />")}&user_visibility=${userVisiblity}&location=${location}`, {
         method: "POST",
         body: formData,
       });
@@ -109,6 +109,7 @@ const CreatePost = () => {
              <TextField
               fullWidth
               required
+              type="text"
               label="location"
               value={location}
               onChange={(e) => setLocation(e.target.value)}

@@ -87,7 +87,7 @@ const TimelineCard = ({ setOpenComment, data, id }) => {
             <p className= {`font-600 ${!matches? 'regular' : 'medium'}`} style={{ marginBottom: "2px" }}>
               Something is wrong with this light
             </p>
-            <p className="text-warp regular font-300">{data.description}</p>
+            <p className="text-warp regular font-300">{data.description.split('<br />').map(e => (e))}</p>
           </div>
             <br />
 
