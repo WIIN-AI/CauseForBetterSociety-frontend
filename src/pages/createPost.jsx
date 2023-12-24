@@ -1,7 +1,7 @@
 import { Box, Container, FormControl, InputLabel, MenuItem, Select, Stack, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {loginDetails} from './../../components/loginDetails'
+import {loginDetails} from '../components/loginDetails'
 
 const CreatePost = () => {
   const navigate = useNavigate();

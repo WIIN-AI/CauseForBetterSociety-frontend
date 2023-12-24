@@ -1,18 +1,23 @@
 import { Box, Grid, InputAdornment, TextField } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
 import SearchIcon from '@mui/icons-material/Search';
 import {loginDetails} from './../../components/loginDetails'
 import { googleLogout } from '@react-oauth/google';
+import ConfirmModal from "./confirmModal";
 
 const Notification = () => {
   const navigate = useNavigate();
 
   function signOut(){
     loginDetails.login = false;
-    navigate('/')
+    setConfirmOpen(false)
+    navigate('/signin')
   }
+
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
 
   const login  = loginDetails.login
   
@@ -106,7 +111,7 @@ const Notification = () => {
           Contact us
         </Box>
         {login && <Box
-          onClick={() => {googleLogout(); signOut()}}
+          onClick={() => setConfirmOpen(true)}
           sx={{
             cursor: "pointer", borderBottom : "1px solid #e2e2e2", padding: "15px 5px"
           }}
@@ -128,6 +133,8 @@ const Notification = () => {
       >
         Notification
       </Box>
+
+      <ConfirmModal confirmOpen={confirmOpen} setConfirmOpen={setConfirmOpen} onClick={() => {googleLogout(); signOut()}}>Are you sure to sign out?</ConfirmModal>
     </Grid>
   );
 };

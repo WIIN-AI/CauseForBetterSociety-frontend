@@ -6,13 +6,13 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ShareIcon from "@mui/icons-material/Share";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import Drawer from "./drawer";
-import RequestSection from "./requestSection";
-import Dialog from "./Dialog";
+import Drawer from "../components/UI/drawer";
+import RequestSection from "../components/UI/requestSection";
+import Dialog from "../components/UI/Dialog";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useParams } from "react-router";
-import {loginDetails} from './../../components/loginDetails'
-import CommentDrawer from "./commentsDrawer";
+import {loginDetails} from '../components/loginDetails'
+import CommentDrawer from "../components/UI/commentsDrawer";
 
 
 
