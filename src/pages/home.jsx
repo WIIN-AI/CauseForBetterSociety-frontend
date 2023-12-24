@@ -20,7 +20,7 @@ const Home = ({setOpenComment}) => {
       </Grid>
       {matches && <Grid container lg={4} md={5} item m={1}>
         <Box position={"fixed"}>
-          <Notification />
+          <Notification/>
         </Box>
       </Grid>}
     </Grid>

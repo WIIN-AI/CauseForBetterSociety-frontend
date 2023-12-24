@@ -1,3 +1,3 @@
-export const loginDetails = {
-  login: true,
+export let loginDetails = {
+  login: false,
 };

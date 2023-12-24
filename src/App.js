@@ -21,7 +21,6 @@ function App() {
 
   const [openComment, setOpenComment] = useState(false);
 
-
   return (
     <GoogleOAuthProvider clientId="782661790171-ekenre4fc5mr7fjuqtogvrp9k8ur0i4b.apps.googleusercontent.com">
       <BrowserRouter>

@@ -8,6 +8,12 @@ import { googleLogout } from '@react-oauth/google';
 
 const Notification = () => {
   const navigate = useNavigate();
+
+  function signOut(){
+    loginDetails.login = false;
+    navigate('/')
+  }
+
   const login  = loginDetails.login
   
   
@@ -100,7 +106,7 @@ const Notification = () => {
           Contact us
         </Box>
         {login && <Box
-          onClick={() => googleLogout()}
+          onClick={() => {googleLogout(); signOut()}}
           sx={{
             cursor: "pointer", borderBottom : "1px solid #e2e2e2", padding: "15px 5px"
           }}

@@ -19,6 +19,13 @@ const SignIn = () => {
   },[login ,navigate])
 
 
+  function signButton(e){
+    e.preventDefault()
+    loginDetails.login = true
+    navigate(-1)
+  }
+
+
 
   const googleLogin = useGoogleLogin({
     onSuccess: codeResponse => {console.log(codeResponse)},
@@ -34,6 +41,7 @@ const SignIn = () => {
         boxSizing: 'border-box'
       }}>
         <p className="sub-heading font-600 text-center">Welcome back</p><br/>
+        <form onSubmit={signButton}>
             <TextField
               fullWidth
               required
@@ -64,6 +72,7 @@ const SignIn = () => {
                 back
               </button>
             </Box>
+            </form>
             <Box mt={8}>
             <div style={{width: '180px'}}>
               </div>
