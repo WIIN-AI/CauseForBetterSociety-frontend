@@ -1,6 +1,6 @@
 import React from 'react'
-import Notification from '../components/UI/notification'
-import { Box, Grid } from '@mui/material'
+import { Grid } from '@mui/material'
+import Menu from '../components/UI/Menu'
 
 const Profile = () => {
   return (
@@ -8,11 +8,7 @@ const Profile = () => {
       <Grid container md={8} item>
         <p>Profile</p>
       </Grid>
-      <Grid container md={4} item m={1}>
-        <Box position={"fixed"}>
-          <Notification />
-        </Box>
-      </Grid>
+      <Menu/>
     </Grid>
   )
 }

@@ -11,9 +11,9 @@ const Notification = () => {
   const navigate = useNavigate();
 
   function signOut(){
-    loginDetails.login = false;
     setConfirmOpen(false)
-    navigate('/signin')
+    localStorage.removeItem('userDetails');
+    window.location.pathname = '/signin'
   }
 
   const [confirmOpen, setConfirmOpen] = useState(false);

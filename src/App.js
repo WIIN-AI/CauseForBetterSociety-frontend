@@ -30,12 +30,12 @@ function App() {
             <Route index element={<Home setOpenComment={setOpenComment} />} />
             <Route path="/create" element={<CreatePost />} />
             <Route path="/post/:id" element={<PostDetails openComment={openComment} setOpenComment={setOpenComment} />} />
-            <Route path="/saved" element={<SavedPost />} />
+            <Route path="/saved" element={<SavedPost setOpenComment={setOpenComment} />} />
             <Route path="/articles" element={<MyArticles />} />
 
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/clearedissues" element={<ClearedIssues />} />
+            <Route path="/clearedissues" element={<ClearedIssues setOpenComment={setOpenComment}/>} />
             <Route path="/profile" element={<Profile />} />
 
             <Route path="/signin" element={<SignIn />} />

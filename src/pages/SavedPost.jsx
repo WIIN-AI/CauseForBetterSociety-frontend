@@ -1,6 +1,6 @@
-import { Box, Grid } from '@mui/material'
+import { Grid } from '@mui/material'
 import React from 'react'
-import Notification from '../components/UI/notification'
+import Menu from '../components/UI/Menu'
 
 const SavedPost = () => {
   return (
@@ -8,11 +8,7 @@ const SavedPost = () => {
       <Grid container md={8} item>
         <p>saved posts</p>
       </Grid>
-      <Grid container md={4} item m={1}>
-        <Box position={"fixed"}>
-          <Notification />
-        </Box>
-      </Grid>
+      <Menu/>
     </Grid>
   )
 }

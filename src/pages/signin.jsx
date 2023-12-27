@@ -1,5 +1,5 @@
 import { Box, Container, Paper, TextField } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import GoogleIcon from '@mui/icons-material/Google';
 import { Link, useNavigate } from "react-router-dom";
 import { loginDetails } from "../components/loginDetails";
@@ -7,10 +7,11 @@ import { GoogleLogin, googleLogout, useGoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 
 
-
 const SignIn = () => {
 
   const navigate = useNavigate();
+
+  const userEmailRef = useRef('')
 
   const login  = loginDetails.login
 
@@ -21,10 +22,16 @@ const SignIn = () => {
 
   function signButton(e){
     e.preventDefault()
-    loginDetails.login = true
-    navigate(-1)
+    const userDetails = {
+      name: userEmailRef.current.value.split('@')[0],
+      email: userEmailRef.current.value,
+      login: true
+    }
+    localStorage.setItem('userDetails', JSON.stringify(userDetails));
+    navigate(0)
   }
 
+  const storedValue = JSON.parse(localStorage.getItem('userDetails'));
 
 
   const googleLogin = useGoogleLogin({
@@ -45,6 +52,7 @@ const SignIn = () => {
             <TextField
               fullWidth
               required
+              inputRef={userEmailRef}
               type="email"
               label="Email"
               placeholder="type here"

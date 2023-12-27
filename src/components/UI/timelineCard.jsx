@@ -82,10 +82,10 @@ const TimelineCard = ({ setOpenComment, data, id }) => {
         <Box className="flex" flexDirection={"column"} width={"100%"}>
           <div onClick={() => navigate(`/post/${data.image_id}`)} style={{ padding: "0 20px", textAlign: "left" }}>
             <p style={{ marginBottom: "5px" }} className="regular">
-              Published in 20th nov
+              Published on {data.date}
             </p>
             <p className= {`font-600 ${!matches? 'regular' : 'medium'}`} style={{ marginBottom: "2px" }}>
-              Something is wrong with this light
+              {data.heading}
             </p>
             <p className="text-warp regular font-300">{data.description.split('<br />').map(e => (e))}</p>
           </div>
