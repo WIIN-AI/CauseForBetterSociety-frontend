@@ -110,6 +110,8 @@ const PostDetails = ({openComment, setOpenComment}) => {
       </div>
     );
   }
+
+
   
 
   return (
@@ -119,7 +121,7 @@ const PostDetails = ({openComment, setOpenComment}) => {
           <p className="heading font-700">{data.heading}</p>
           <br />
           <Box className="flex center" justifyContent={"space-between"}>
-            <p className="font-500">User : {data.user_visibility ? 'Sharan Murthi' : data.uuid?.slice(0,8)}</p>
+            <p className="font-500">User : {data.user_visibility ? data.email?.split('@')[0] : data.uuid?.slice(0,8)}</p>
             <p style={{ opacity: "70%" }}>Published on {data.date}</p>
           </Box>
           <Box className="flex center" justifyContent={"space-between"}>
@@ -170,10 +172,9 @@ const PostDetails = ({openComment, setOpenComment}) => {
             }}
           />
           <br />
-          <p className="sub-heading font-700">{data.heading}</p><br/>
           {paragraph.map((value, i) => (
             <>
-            <p style={{whiteSpace: "pre-wrap"}} className="medium font-300 text-justified" key={i}>
+            <p style={{whiteSpace: "pre-wrap"}} className="font-Nota medium font-500 text-justified" key={i}>
               {value}
             </p><br/>
             </>

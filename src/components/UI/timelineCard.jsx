@@ -7,7 +7,6 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import { Box, Stack } from "@mui/material";
 import Drawer from "./drawer";
-import CommentDrawer from "./commentsDrawer";
 import Dialog from "./Dialog";
 import { useNavigate } from "react-router";
 import {loginDetails} from './../../components/loginDetails'
@@ -15,13 +14,14 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 
 
-const TimelineCard = ({ setOpenComment, data, id }) => {
+const TimelineCard = ({ setOpenComment, data }) => {
   const [like, setLike] = useState(false);
   const [save, setSave] = useState(false);
   const [open, setOpen] = useState(false);
   const [openShareLink, setOpenShareLink] = useState(false);
 
   const matches = useMediaQuery('(min-width:900px)');
+  const mobilematches = useMediaQuery('(min-width:600px)');
 
   const navigate = useNavigate();
   const login  = loginDetails.login
@@ -79,20 +79,20 @@ const TimelineCard = ({ setOpenComment, data, id }) => {
             src="https://img.freepik.com/free-photo/sunset-time-tropical-beach-sea-with-coconut-palm-tree_74190-1075.jpg"
             alt={data.filename}
           />
-        <Box className="flex" flexDirection={"column"} width={"100%"}>
-          <div onClick={() => navigate(`/post/${data.image_id}`)} style={{ padding: "0 20px", textAlign: "left" }}>
+        <Box className="flex" flexDirection={"column"} width={ !mobilematches || !matches ? "76%" : '100%'} pl={2}>
+          <div onClick={() => navigate(`/post/${data.image_id}`)} style={{ textAlign: "left" }}>
             <p style={{ marginBottom: "5px" }} className="regular">
               Published on {data.date}
             </p>
-            <p className= {`font-600 ${!matches? 'regular' : 'medium'}`} style={{ marginBottom: "2px" }}>
+            <p className= {`font-700 ${!matches? 'regular' : 'medium'}`} style={{ marginBottom: "2px" }}>
               {data.heading}
             </p>
-            <p className="text-warp regular font-300">{data.description.split('<br />').map(e => (e))}</p>
+            <p style={{width: '70%'}} className="font-Nota text-warp regular font-500">{data.description.split('<br />').map(e => (e))}</p>
           </div>
             <br />
 
 
-            <Stack left={'15vh'} bottom={'1vh'} flexDirection={"row"} justifyContent={"space-between"} position={"absolute"} >
+            <Stack bottom={'1vh'} flexDirection={"row"} justifyContent={"space-between"} position={"absolute"} >
                 {like ? (
                   <FavoriteIcon
                     onClick={getLike}

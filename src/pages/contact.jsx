@@ -1,4 +1,4 @@
-import { Box, Container, Grid, Paper, TextField } from '@mui/material'
+import { Box, Container, Divider, Grid, Paper, TextField } from '@mui/material'
 import React from 'react'
 import Menu from '../components/UI/Menu'
 
@@ -7,8 +7,18 @@ const Contact = () => {
     <Grid mt={8} marginX={1} className="flex">
        <Grid container md={8} item display={"block"} pt={3}>
         <Container maxWidth="sm">
+          <p className="heading font-900">
+            Cause.For.Better.Society
+          </p>
+          <br />
+            <Divider/>
+          <br />
           <p className="sub-heading font-800">
-          Contact Us: Let's Build a Better India Together!
+          Contact Us  :
+          </p>
+          <br/>
+          <p className="medium font-600">
+          Cause For Better Society, Together
           </p>
           <br />
           <p className="text-justified font-400">
@@ -77,8 +87,8 @@ const Contact = () => {
 
           <p className="font-400">Attend events: We host regular events where you can learn more about our work, connect with other like-minded individuals, and take action. See upcoming events here: [events_page_url]</p>
           </p><br/>
-          <p className="text-justified font-300">We value your voice and your commitment to making India a better place. No matter how you choose to connect, we appreciate your engagement and look forward to working with you!</p>
-          <br />
+          {/* <p className="text-justified font-300">We value your voice and your commitment to making India a better place. No matter how you choose to connect, we appreciate your engagement and look forward to working with you!</p>
+          <br /> */}
           <p className="sub-heading font-800">
           Additionally, you might consider including:
           </p>

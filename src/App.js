@@ -31,7 +31,7 @@ function App() {
             <Route path="/create" element={<CreatePost />} />
             <Route path="/post/:id" element={<PostDetails openComment={openComment} setOpenComment={setOpenComment} />} />
             <Route path="/saved" element={<SavedPost setOpenComment={setOpenComment} />} />
-            <Route path="/articles" element={<MyArticles />} />
+            <Route path="/articles" element={<MyArticles setOpenComment={setOpenComment} />} />
 
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />

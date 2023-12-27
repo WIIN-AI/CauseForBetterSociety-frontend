@@ -1,4 +1,4 @@
-import { Container, Grid } from "@mui/material";
+import { Container, Divider, Grid } from "@mui/material";
 import React from "react";
 import Menu from "../components/UI/Menu";
 
@@ -7,8 +7,17 @@ const About = () => {
     <Grid mt={8} marginX={1} className="flex">
       <Grid container md={8} item display={"block"} pt={3}>
         <Container maxWidth="sm">
+          <p className="heading font-900">
+          Cause.For.Better.Society
+          </p>
+          <br />
+            <Divider/>
+          <br />
           <p className="sub-heading font-800">
-            About Us: Building a Brighter India, Together
+            About Us :
+          </p> <br />
+          <p className="medium font-600">
+          Cause For Better Society, Together
           </p>
           <br />
           <p className="text-justified  font-500">

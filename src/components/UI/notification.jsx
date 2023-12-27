@@ -92,7 +92,7 @@ const Notification = () => {
             cursor: "pointer", borderBottom : "1px solid #000000", padding: "15px 5px"
           }}
         >
-          Your Articles
+          My Articles
         </Box>}
         <Box
           onClick={() => navigate("/about")}

@@ -8,6 +8,8 @@ const CreatePost = () => {
 
   const login  = loginDetails.login
 
+  const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+
   useEffect(()=>{
     !login && navigate('/')
   },[login ,navigate])
@@ -48,7 +50,7 @@ const CreatePost = () => {
     const formData = new FormData();
     formData.append('file', image);
     try {
-      const response = await fetch(`${process.env.REACT_APP_API}/add_image/?heading=${subject}&description=${story.replace(/\n/g, "<br />")}&user_visibility=${userVisiblity}&location=${location}`, {
+      const response = await fetch(`${process.env.REACT_APP_API}/add_image/?heading=${subject}&description=${story.replace(/\n/g, "<br />")}&user_visibility=${userVisiblity}&location=${location}&email=${userDetails.email}`, {
         method: "POST",
         body: formData,
       });
