@@ -28,7 +28,7 @@ const MyArticle = ({setOpenComment}) => {
       <Grid container md={8} item display={"block"} padding={'0 20px'}>
         <p className='medium font-600'>My Article</p>
         <br/>
-        {yourArticleData.length === 0 && <p className='medium font-400'>No Articles are found</p>}
+        {yourArticleData.length === 0 && !pending && <p className='medium font-400'>No Articles are found</p>}
         <Grid container flexDirection={'row'} item columnSpacing={2} rowSpacing={2}>
         {pending && <Loader/>}
         {yourArticleData.map((data, i) => <SavedCard key={i} data={data} id={i} setOpenComment={setOpenComment} />)}
