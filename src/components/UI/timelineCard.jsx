@@ -80,11 +80,11 @@ const TimelineCard = ({ setOpenComment, data }) => {
             alt={data.filename}
           />
         <Box className="flex" flexDirection={"column"} width={ !mobilematches || !matches ? "76%" : '100%'} pl={2}>
-          <div onClick={() => navigate(`/post/${data.image_id}`)} style={{ textAlign: "left" }}>
+          <div onClick={() => navigate(`/post/${data.image_id}`)} style={{ textAlign: "left", marginTop: "5px" }}>
             <p style={{ marginBottom: "5px" }} className="regular">
               Published on {data.date}
             </p>
-            <p className= {`font-700 ${!matches? 'regular' : 'medium'}`} style={{ marginBottom: "2px" }}>
+            <p className= {`font-700 ${!matches? 'regular' : 'medium'}`}>
               {data.heading}
             </p>
             <p style={{width: '70%'}} className="font-Nota text-warp regular font-500">{data.description.split('<br />').map(e => (e))}</p>
