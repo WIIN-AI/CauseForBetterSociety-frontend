@@ -39,13 +39,18 @@ export default function ResponsiveDialog({ setOpenShareLink, openShareLink, chil
             <Box width={"50vh"}>
               <TextField
                 fullWidth
-                required
                 type="text"
                 value={children}
                 color="info"
                 focused
                 sx={{
                   margin: "0 0 10px",
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: 'black',
+                      border: 1
+                    }
+                  }
                 }}
               />
             </Box>

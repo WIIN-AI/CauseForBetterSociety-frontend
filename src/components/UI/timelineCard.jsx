@@ -1,13 +1,12 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ShareIcon from "@mui/icons-material/Share";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import Drawer from "./drawer";
-import CommentDrawer from "./commentsDrawer";
 import Dialog from "./Dialog";
 import { useNavigate } from "react-router";
 import {loginDetails} from './../../components/loginDetails'
@@ -15,14 +14,14 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 
 
-const TimelineCard = ({ data, id }) => {
+const TimelineCard = ({ setOpenComment, data }) => {
   const [like, setLike] = useState(false);
   const [save, setSave] = useState(false);
   const [open, setOpen] = useState(false);
-  const [openComment, setOpenComment] = useState(false);
   const [openShareLink, setOpenShareLink] = useState(false);
 
   const matches = useMediaQuery('(min-width:900px)');
+  const mobilematches = useMediaQuery('(min-width:600px)');
 
   const navigate = useNavigate();
   const login  = loginDetails.login
@@ -35,8 +34,13 @@ const TimelineCard = ({ data, id }) => {
     }
   };
 
+
   const getComments = function () {
-      setOpenComment(true);
+    setTimeout(()=>{
+      setOpenComment(true)
+    },300)
+    clearTimeout()
+    navigate(`/post/${data.image_id}`)  
   };
 
   const getSave = function () {
@@ -64,69 +68,71 @@ const TimelineCard = ({ data, id }) => {
         position: "relative",
         border: "2px solid #00000020",
         padding: 2,
+        cursor : "default"
       }}
     >
       <Box className="flex">
           <img
-            onClick={() => navigate(`/post/${data.filename}`)}
+            onClick={() => navigate(`/post/${data.image_id}`)}
             style={{ height: "127px", width: "127px", borderRadius: 3 }}
+            // src={data.filename}
             src="https://img.freepik.com/free-photo/sunset-time-tropical-beach-sea-with-coconut-palm-tree_74190-1075.jpg"
-            alt="sunset"
+            alt={data.filename}
           />
-        <Box className="flex" flexDirection={"column"}>
-          <div onClick={() => navigate(`/post/${data.filename}`)} style={{ padding: "0 20px", textAlign: "left" }}>
+        <Box className="flex" flexDirection={"column"} width={ !mobilematches || !matches ? "76%" : '100%'} pl={2}>
+          <div onClick={() => navigate(`/post/${data.image_id}`)} style={{ textAlign: "left", marginTop: "5px" }}>
             <p style={{ marginBottom: "5px" }} className="regular">
-              Published in 20th nov
+              Published on {data.date}
             </p>
-            <p className= {`font-600 ${!matches? 'regular' : 'medium'}`} style={{ marginBottom: "2px" }}>
-              Something is wrong with this light
+            <p className= {`font-700 ${!matches? 'regular' : 'medium'}`}>
+              {data.heading}
             </p>
-            <p className="text-warp regular font-300">{data.description}</p>
+            <p style={{width: '70%'}} className="font-Nota text-warp regular font-500">{data.description.split('<br />').map(e => (e))}</p>
           </div>
             <br />
 
 
-            <Box pl={3} className="flex center" zIndex={99}>
-              <div>
+            <Stack bottom={'1vh'} flexDirection={"row"} justifyContent={"space-between"} position={"absolute"} >
                 {like ? (
                   <FavoriteIcon
                     onClick={getLike}
                     color="error"
-                    style={{ margin: "0px 10px 5px 0" }}
+                    style={{ margin: "0px 10px 5px 0" , display: "flex"}}
                   />
                 ) : (
                   <FavoriteBorderIcon
                     onClick={getLike}
-                    style={{ margin: "0px 10px 5px 0" }}
+                    style={{ margin: "0px 10px 5px 0" , display: "flex" }}
                   />
                 )}
                 <ChatBubbleOutlineIcon
                   onClick={getComments}
-                  style={{ margin: "0px 10px 4px" }}
+                  style={{ margin: "0px 10px 4px", display: "flex" }}
                 />
                 <ShareIcon
                   onClick={shareLink}
-                  style={{ margin: "0px 10px 6px" }}
+                  style={{ margin: "0px 10px 6px", display: "flex" }}
                 />
+          </Stack>
+
+            <Stack right={'1vh'} bottom={'1vh'} flexDirection={"row"} justifyContent={"space-between"} position={"absolute"} >
                 {save ? (
                   <BookmarkIcon
                     onClick={getSave}
-                    style={{ margin: "0px 10px 6px" }}
+                    style={{ margin: "0px 10px 6px", display: "flex" }}
                   />
                 ) : (
                   <BookmarkBorderIcon
                     onClick={getSave}
-                    style={{ margin: "0px 10px 6px" }}
+                    style={{ margin: "0px 10px 6px", display: "flex" }}
                   />
                 )}
-            </div>
-          </Box>
+          </Stack>
         </Box>
       </Box>
       <Drawer open={open} setOpen={setOpen} />
-      <CommentDrawer data={data} open={openComment} setOpen={setOpenComment} />
       <Dialog setOpenShareLink={setOpenShareLink} openShareLink={openShareLink}>
-        {`${window.location.href}post/${id}`}
+        {`${window.location.href}post/${data.image_id}`}
       </Dialog>
     </Box>
   );

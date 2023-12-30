@@ -7,8 +7,8 @@ const useFetch = (url, refetch) => {
 
   useEffect(() => {
     setPending(true);
-    setTimeout(() => {
-      fetch(url, {
+    setTimeout( async() => {
+     fetch(url, {
         method: "GET",
         // credentials: "include",
         headers: { "Content-Type": "application/json" },

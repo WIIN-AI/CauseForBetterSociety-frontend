@@ -1,3 +1,5 @@
+const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+console.log(userDetails)
 export const loginDetails = {
-  login: true,
+  login: userDetails ? userDetails.login : false,
 };

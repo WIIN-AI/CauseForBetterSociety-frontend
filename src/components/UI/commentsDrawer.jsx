@@ -14,7 +14,7 @@ const Comments = ({ data, open = false, setOpen }) => {
   const [writeComment, setWriteComment] = useState("");
 
   function getComments() {
-    fetch(`${process.env.REACT_APP_API}/get_comments/${data.filename}`, {
+    fetch(`${process.env.REACT_APP_API}/get_comments?image_id=${data}`, {
       method: "GET",
       // credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -40,12 +40,12 @@ const Comments = ({ data, open = false, setOpen }) => {
   const sendComment = function (e) {
     e.preventDefault();
     fetch(
-      `${process.env.REACT_APP_API}/add_comment/${data.filename}?comment=${writeComment}`,
+      `${process.env.REACT_APP_API}/add_comment/?image_id=${data}&comment=${writeComment}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          filename: data.filename,
+          image_id : data,
           comment: writeComment,
         }),
       }
@@ -96,8 +96,8 @@ const Comments = ({ data, open = false, setOpen }) => {
               </Box>
             </form>
           )}
-          {comment.map((data) => (
-            <Comment data={data} />
+          {comment.map((data, i) => (
+            <Comment key={i} data={data} />
           ))}
         </Box>
       </SwipeableDrawer>

@@ -7,15 +7,14 @@
   box-sizing: border-box;
 }
 
-.font-Playfair{
-  font-family: 'Playfair Display', serif !important;
+.font-Nota{
+  font-family: 'Noto Serif', serif !important;
 }
 
 .text-warp {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  max-width: 250px;
 }
 
 
