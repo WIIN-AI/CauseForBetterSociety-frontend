@@ -157,7 +157,7 @@ const CreatePost = () => {
               <button type="submit" className="button">
                 post
               </button>
-              <button type="button" onClick={reset} className="reset">
+              <button type="reset" onClick={reset} className="reset">
                 reset
               </button>
             </Box>
