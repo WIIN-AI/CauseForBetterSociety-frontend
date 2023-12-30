@@ -12,8 +12,8 @@ const ClearIssues = ({setOpenComment}) => {
 
   return (
     <Grid mt={8} marginX={1} className="flex">
-      <Grid container md={8} item>
-        <p>cleared issues</p>
+       <Grid container md={8} item display={'block'}>
+        <p className='medium font-600'>Cleared issues</p>
         {pending && <Loader/>}
         {timelineCardData.map((data, i) => <TimelineCard key={i} data={data} id={i} setOpenComment={setOpenComment} />)}
       </Grid>

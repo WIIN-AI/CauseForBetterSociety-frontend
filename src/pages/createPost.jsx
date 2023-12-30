@@ -2,6 +2,7 @@ import { Box, Container, FormControl, InputLabel, MenuItem, Select, Stack, TextF
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {loginDetails} from '../components/loginDetails'
+import ConfirmModal from "../components/UI/confirmModal";
 
 const CreatePost = () => {
   const navigate = useNavigate();
@@ -44,9 +45,10 @@ const CreatePost = () => {
   }
 
 
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
   const submit = async function (event) {
 
-    event.preventDefault()
     const formData = new FormData();
     formData.append('file', image);
     try {
@@ -65,11 +67,16 @@ const CreatePost = () => {
     }
   }
 
+  function handleConfirmation(event){
+    event.preventDefault()
+    setConfirmOpen(true)
+  }
+
   return (
     <Container maxWidth="md">
       <Box className="center text-center" mt={8}>
         <p className="heading font-800 capitalize">create post</p>
-        <form onSubmit={submit}>
+        <form onSubmit={handleConfirmation}>
           <Box
             m={2}
             p={2}
@@ -157,6 +164,7 @@ const CreatePost = () => {
           </Box>
         </form>
       </Box>
+      <ConfirmModal confirmOpen={confirmOpen} setConfirmOpen={setConfirmOpen} onClick={submit}>Are you sure ?</ConfirmModal>
     </Container>
   );
 };
