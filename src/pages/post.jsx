@@ -172,11 +172,15 @@ const PostDetails = ({openComment, setOpenComment}) => {
             }}
           />
           <br />
+          {data.subheading && <><p style={{whiteSpace: "pre-wrap"}} className="sub-heading font-700">
+              {data.subheading}
+          </p><br/></>}
           {paragraph.map((value, i) => (
             <>
-            <p style={{whiteSpace: "pre-wrap"}} className="font-Nota medium font-500 text-justified" key={i}>
+            <p style={{whiteSpace: "pre-wrap"}} className="font-Nota medium font-400 text-justified" key={i}>
               {value}
-            </p><br/>
+            </p>
+            <br/>
             </>
           ))}
           {/* <p className="medium font-400 text-justified" >{data.description}</p> */}

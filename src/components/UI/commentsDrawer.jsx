@@ -6,6 +6,7 @@ import Comment from "./comment";
 import { useEffect } from "react";
 import { useState } from "react";
 import { loginDetails } from "../loginDetails";
+import { TextInputProps } from "../../pages/createPost";
 
 const Comments = ({ data, open = false, setOpen }) => {
   const login = loginDetails.login;
@@ -84,9 +85,7 @@ const Comments = ({ data, open = false, setOpen }) => {
                   placeholder="write your comment here"
                   value={writeComment}
                   onChange={(e) => setWriteComment(e.target.value)}
-                  sx={{
-                    marginTop: 1,
-                  }}
+                  {...TextInputProps}
                 />
               </Box>
               <Box mt={1} textAlign={"right"}>

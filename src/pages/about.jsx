@@ -1,14 +1,15 @@
-import { Container, Divider, Grid } from "@mui/material";
+import { Container, Divider, Grid, useMediaQuery } from "@mui/material";
 import React from "react";
 import Menu from "../components/UI/Menu";
 
 const About = () => {
+
   return (
     <Grid mt={8} marginX={1} className="flex">
       <Grid container md={8} item display={"block"} pt={3}>
         <Container maxWidth="sm">
-          <p className="heading font-900">
-          Cause.For.Better.Society
+          <p className={`heading font-900`}>
+          Cause For Better Society
           </p>
           <br />
             <Divider/>

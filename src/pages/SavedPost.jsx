@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material'
+import { Container, Grid } from '@mui/material'
 import React, { useEffect } from 'react'
 import Menu from '../components/UI/Menu'
 import SavedCard from '../components/UI/SavedCard'
@@ -21,13 +21,15 @@ const SavedPost = ({setOpenComment}) => {
 
   return (
     <Grid mt={8} marginX={1} className="flex">
-      <Grid container md={8} item display={"block"} padding={'0 20px'}>
+      <Grid container md={8} item display={"block"}>
+      <Container maxWidth="sm">
         <p className='medium font-600'>Saved Posts</p>
         <br/>
         <Grid container flexDirection={'row'} item columnSpacing={2} rowSpacing={2}>
         {pending && <Loader/>}
         {savedCardData.map((data, i) => <SavedCard key={i} data={data} id={i} setOpenComment={setOpenComment} />)}
         </Grid>
+      </Container>
       </Grid>
       <Menu/>
     </Grid>

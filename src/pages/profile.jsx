@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Box, Divider, Grid } from '@mui/material'
+import { Box, Container, Divider, Grid, useMediaQuery } from '@mui/material'
 import Menu from '../components/UI/Menu'
 import { useNavigate } from 'react-router';
 import { loginDetails } from '../components/loginDetails';
@@ -16,13 +16,16 @@ const Profile = () => {
 
   const userDetails = JSON.parse(localStorage.getItem('userDetails'));
   const firstLetter = userDetails.name.slice(0,1).toUpperCase()
+  const matches = useMediaQuery('(min-width:900px)');
+
 
   const image = ""
 
 
   return (
     <Grid mt={8} marginX={1} className="flex">
-      <Grid container md={8} item display={'block'}>
+      <Grid container md={8} item display={'block'} padding={ matches && '0 20px'}>
+      <Container maxWidth="sm">
         <p className='medium font-600'>Profile</p>
         <Divider><p className='font-500'>Account</p></Divider>
         <br/>
@@ -55,6 +58,7 @@ const Profile = () => {
         <p>Deactivating will suspend your account until you sign back in.</p><br/>
         <Link style={{color:'red'}} className='font-500'>Delete Account</Link>
         <p>Permanently delete your account and all of your content.</p>
+        </Container>
       </Grid>
       <Menu/>
     </Grid>
