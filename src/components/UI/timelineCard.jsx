@@ -79,12 +79,12 @@ const TimelineCard = ({ setOpenComment, data }) => {
             src="https://img.freepik.com/free-photo/sunset-time-tropical-beach-sea-with-coconut-palm-tree_74190-1075.jpg"
             alt={data.filename}
           />
-        <Box className="flex" flexDirection={"column"} width={ !mobilematches || !matches ? "76%" : '100%'} pl={2}>
+        <Box className="flex" flexDirection={"column"} width={ !mobilematches ? "76%" : '100%'} pl={2}>
           <div onClick={() => navigate(`/post/${data.image_id}`)} style={{ textAlign: "left", marginTop: "5px" }}>
             <p style={{ marginBottom: "5px" }} className="regular">
               Published on {data.date}
             </p>
-            <p className= {`font-700 ${!matches? 'regular' : 'medium'}`}>
+            <p className= {`font-700 ${!mobilematches? 'regular' : 'medium'}`}>
               {data.heading}
             </p>
             <p style={{width: '70%'}} className="font-Nota text-warp regular font-500">{data.description.split('<br />').map(e => (e))}</p>

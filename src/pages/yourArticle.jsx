@@ -1,4 +1,4 @@
-import { Container, Grid } from '@mui/material'
+import { Container, Grid, useMediaQuery } from '@mui/material'
 import React, { useEffect } from 'react'
 import Menu from '../components/UI/Menu'
 import Loader from '../components/UI/loader/Loader'
@@ -22,10 +22,13 @@ const MyArticle = ({setOpenComment}) => {
   const userDetails = JSON.parse(localStorage.getItem('userDetails'));
   const yourArticleData = totalData.filter(e => e.email === userDetails.email)
 
+  const matches = useMediaQuery('(min-width:900px)');
+
+
   return (
     <Grid mt={8} marginX={1} className="flex">
       <Grid container md={8} item display={"block"}>
-      <Container maxWidth="sm">
+      <Container maxWidth={matches && "sm"}>
         <p className='medium font-600'>My Article</p>
         <br/>
         {yourArticleData.length === 0 && !pending && <p className='medium font-400'>No Articles are found</p>}
