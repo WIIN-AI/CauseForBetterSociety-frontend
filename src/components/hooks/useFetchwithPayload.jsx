@@ -1,6 +1,6 @@
 import React from "react";
 
-  const useFetchwithPayload = (url, options) => {
+  const useFetchwithPayload = (url, options={}) => {
       const [response, setResponse] = React.useState(null);
       const [error, setError] = React.useState(null);
       const [abort, setAbort] = React.useState(() => {});

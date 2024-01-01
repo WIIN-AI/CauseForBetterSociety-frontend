@@ -8,7 +8,7 @@ const Contact = () => {
        <Grid container md={8} item display={"block"} pt={3}>
         <Container maxWidth="sm">
           <p className="heading font-900">
-            Cause.For.Better.Society
+            Cause For Better Society
           </p>
           <br />
             <Divider/>

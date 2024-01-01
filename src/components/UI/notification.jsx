@@ -23,7 +23,7 @@ const Notification = () => {
   
   
   return (
-    <Grid lg={12} container item>
+    <Grid container item>
       <Box
         textAlign={"center"}
         width={"100%"}

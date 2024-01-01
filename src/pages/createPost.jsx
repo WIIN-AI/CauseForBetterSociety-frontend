@@ -1,8 +1,24 @@
-import { Box, Container, FormControl, InputLabel, MenuItem, Select, Stack, TextField } from "@mui/material";
+import { Box, Container, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {loginDetails} from '../components/loginDetails'
 import ConfirmModal from "../components/UI/confirmModal";
+import { red } from "@mui/material/colors";
+
+export const TextInputProps = {
+  InputLabelProps:{
+    style: { color: 'grey' },
+  },
+  sx:{
+    margin: "5px 0",
+    "& .MuiOutlinedInput-root": {
+      "&.Mui-focused fieldset": {
+        borderColor: 'black',
+        border: 2
+      }
+    }
+  } 
+}
 
 const CreatePost = () => {
   const navigate = useNavigate();
@@ -17,6 +33,8 @@ const CreatePost = () => {
 
 
   const [subject, setSubject] = useState("");
+  const [subheading, setSubheading] = useState("");
+
   const [story, setStory] = useState("");
   const [location, setLocation] = useState("");
   const [userVisiblity, setUserVisiblity] = useState('');
@@ -30,31 +48,44 @@ const CreatePost = () => {
     setImage(e.target.files[0]);
     const imageFile = e.target.files[0];
     const imageURL = URL.createObjectURL(imageFile);
-    setImageUrl(imageURL);
+    setImageUrl(imageFile?.name);
   }
-
 
   function reset() {
     setImage();
     setImageUrl(null);
     setSubject("");
+    setSubheading('')
     setStory("");
     setImageValue('')
     setUserVisiblity('')
     setLocation('')
   }
 
+  function deleteImage(){
+    setImage();
+    setImageUrl(null);
+    setImageValue('')
+  }
+
+  // console.log(imageUrl)
+
 
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [progress, setProgress] = useState(0);
+
 
   const submit = async function (event) {
 
     const formData = new FormData();
     formData.append('file', image);
     try {
-      const response = await fetch(`${process.env.REACT_APP_API}/add_image/?heading=${subject}&description=${story.replace(/\n/g, "<br />")}&user_visibility=${userVisiblity}&location=${location}&email=${userDetails.email}`, {
+      const response = await fetch(`${process.env.REACT_APP_API}/add_image/?heading=${subject}&description=${story.replace(/\n/g, "<br />")}&subheading=${subheading}&user_visibility=${userVisiblity}&location=${location}&email=${userDetails.email}`, {
         method: "POST",
         body: formData,
+        onUploadProgress: (progressEvent) => {
+          setProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total));
+        },
       });
       const result = await response.json();
       console.log("Success:", result);
@@ -72,9 +103,11 @@ const CreatePost = () => {
     setConfirmOpen(true)
   }
 
+  // console.log(progress)
+
   return (
     <Container maxWidth="md">
-      <Box className="center text-center" mt={8}>
+      <Box className="center text-center" mt={8} mb={8}>
         <p className="heading font-800 capitalize">create post</p>
         <form onSubmit={handleConfirmation}>
           <Box
@@ -82,7 +115,6 @@ const CreatePost = () => {
             p={2}
             style={{
               borderRadius: "5px",
-              width: "100%",
               minHeight: "30vh",
               position: "relative",
               cursor: "pointer",
@@ -96,25 +128,49 @@ const CreatePost = () => {
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="write here"
-              sx={{
-                margin: "5px 0",
-              }}
+              date
+              {...TextInputProps}
             />
 
-            {imageUrl !== null && <img style={{height: '200px'}} src={imageUrl} alt="image_preview" />}
-            <Stack direction="row" spacing={1}
+            {/* {imageUrl !== null && <img style={{height: '200px'}} src={imageUrl} alt="image_preview" />} */}
+            {imageUrl !== null && <Box
+              display={"flex"}
+              alignItems={"center"}
+              bgcolor={"#EAF0FF"} 
+              color={"black"} 
+              height={50}
+              borderRadius={1} 
+              sx={{width:'100%', border: "2px solid #00000020", margin: "5px 0 10px"}} 
+              p={2}>
+                {imageUrl}
+              </Box>}
+            <Stack   direction={{ xs: 'column', sm: 'row' }} spacing={1}
               sx={{
                 margin: "5px 0",
               }}
-            >
+              >
+              {imageUrl !== null ? 
+            <Box
+              display={"flex"}
+              bgcolor={"#BF3131"} 
+              color={"white"} 
+              borderRadius={1} 
+              sx={{width:'100%'}} 
+              justifyContent={"space-between"} 
+              alignItems={"center"} 
+              p={2}>
+            <Box > Delete image</Box>
+            <Box onClick={deleteImage}>✖</Box>
+            </Box> :
             <TextField
               fullWidth
               required
               type="file"
               value={imageValue}
-              accept="image/*"
+              inputProps={{accept:"image/jpeg"}}
               onChange={onImageChange}
-            />
+              {...TextInputProps}
+            /> }
              <TextField
               fullWidth
               required
@@ -123,20 +179,32 @@ const CreatePost = () => {
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="text here"
+              {...TextInputProps}
             />
-            <FormControl fullWidth >
-            <InputLabel id="demo-simple-select-label">User visiblity</InputLabel>
-              <Select
+              <TextField
+                fullWidth
+                {...TextInputProps}
                 value={userVisiblity}
-                label="User visiblity"
+                label="user visiblity"
+                variant="outlined"
+                placeholder=""
                 onChange={(e)=> setUserVisiblity(e.target.value)}
                 required
+                select
               >
                 <MenuItem value={true}>on</MenuItem>
                 <MenuItem value={false}>off</MenuItem>
-              </Select>
-              </FormControl>
+              </TextField>
               </Stack>
+
+            <TextField
+              fullWidth
+              label="sub-heading (optional)"
+              value={subheading}  
+              onChange={(e) => setSubheading(e.target.value)}
+              placeholder="optional"
+              {...TextInputProps}
+            />
 
             <TextField
               fullWidth
@@ -148,9 +216,7 @@ const CreatePost = () => {
               placeholder="write here"
               value={story}
               onChange={(e) => setStory(e.target.value)}
-              sx={{
-                margin: "5px 0",
-              }}
+              {...TextInputProps}
             />
 
             <Box mt={2}>
