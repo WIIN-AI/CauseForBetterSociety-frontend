@@ -3,9 +3,7 @@ import React, { useEffect, useRef } from "react";
 import GoogleIcon from '@mui/icons-material/Google';
 import { Link, useNavigate } from "react-router-dom";
 import { loginDetails } from "../components/loginDetails";
-import { GoogleLogin, googleLogout, useGoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
-
+import { useGoogleLogin } from "@react-oauth/google";
 
 const SignIn = () => {
 
@@ -35,9 +33,24 @@ const SignIn = () => {
 
 
   const googleLogin = useGoogleLogin({
-    onSuccess: codeResponse => {console.log(codeResponse)},
-    flow: 'auth-code',
-  });
+    flow: "auth-code",
+    onSuccess: async codeResponse => {
+        console.log(codeResponse);
+
+        const tokens = await fetch(`https://oauth2.googleapis.com/token`, {
+            method: "POST",
+            body: JSON.stringify({
+              'code': codeResponse.code,
+              'client_id': '782661790171-6vqudk01fu4sajid0huvbr3d4qu29cv7.apps.googleusercontent.com',
+              'client_secret': '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',
+              'redirect_uri': 'http://localhost:3000',
+              'grant_type': 'authorization_code'
+            }),
+        });
+        const result = await tokens.json();
+        console.log("Success:", result);
+    }
+})
 
   return (
     <Container maxWidth="sm">

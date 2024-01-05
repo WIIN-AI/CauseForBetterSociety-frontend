@@ -8,7 +8,7 @@ const Menu = () => {
   return (
     <>
       {matches && (
-        <Container maxWidth="xs">
+        <Container maxWidth="xs" style={{padding: 0}}>
           <Box position={"fixed"} style={{ marginTop: 8 }}>
             <Notification />
           </Box>

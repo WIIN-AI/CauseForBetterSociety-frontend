@@ -22,7 +22,7 @@ function App() {
   const [openComment, setOpenComment] = useState(false);
 
   return (
-    <GoogleOAuthProvider clientId="782661790171-ekenre4fc5mr7fjuqtogvrp9k8ur0i4b.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId="782661790171-6vqudk01fu4sajid0huvbr3d4qu29cv7.apps.googleusercontent.com">
       <BrowserRouter>
         <Navbar />
         <Container maxWidth="lg">
@@ -42,6 +42,7 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
 
             <Route path="*" element={<NoPage />} />
+                
           </Routes>
         </Container>
       </BrowserRouter>

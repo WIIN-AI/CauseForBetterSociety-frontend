@@ -22,7 +22,7 @@ const MobileMenu = ({open = false, setOpen }) => {
   return (
     <>
     <SwipeableDrawer
-      anchor={"right"}
+      anchor={"left"}
       open={open}
       onClose={() => setOpen(false)}
       onOpen={() => setOpen(false)}

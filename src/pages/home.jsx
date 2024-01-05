@@ -13,11 +13,10 @@ const Home = ({setOpenComment}) => {
 
   const matches = useMediaQuery('(min-width:900px)');
 
-
   return (
     <Grid mt={8} marginX={1} className="flex">
       <Grid container md={8} item display={"block"}>
-      <Container maxWidth={matches && "sm"}>
+      <Container maxWidth={matches && "sm"} >
         <p className='medium font-600'>Your timeline</p>
         <br/>
         {timelineCardData.length === 0 && !pending && <p className='medium font-400'>No pending issues found</p>}

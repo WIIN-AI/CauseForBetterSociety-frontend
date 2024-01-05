@@ -20,6 +20,7 @@ export default function ConfirmModal({children, confirmOpen, setConfirmOpen, ...
         keepMounted
         onClose={()=>setConfirmOpen(false)}
         aria-describedby="alert-dialog-slide-description"
+        sx={{zIndex: 99999}}
       >
         <DialogTitle>{children}</DialogTitle>
         <DialogActions>

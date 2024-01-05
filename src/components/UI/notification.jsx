@@ -23,7 +23,8 @@ const Notification = () => {
   
   
   return (
-    <Grid container item>
+    <Grid>
+      <Box textAlign={"left"} width={"100%"}>
       <Box
         textAlign={"center"}
         width={"100%"}
@@ -37,8 +38,6 @@ const Notification = () => {
       >
         Menu
       </Box>
-  
-      <Box textAlign={"left"} width={"100%"} pl={1} pr={1}>
         <TextField size="small" id="standard-basic" fullWidth placeholder="Search by location"
           InputProps={{
             startAdornment: (
@@ -47,7 +46,7 @@ const Notification = () => {
               </InputAdornment>
             ),
             endAdornment: (
-              <InputAdornment position="end">
+              <InputAdornment position="end" sx={{cursor: "pointer"}}>
                 <SearchIcon className="font-black" />
               </InputAdornment>
             ),
@@ -118,22 +117,21 @@ const Notification = () => {
         >
           Sign out
         </Box>}
+        <Box
+            textAlign={"center"}
+            width={"100%"}
+            borderRadius={"2px"}
+            mb={1}
+            p={1}
+            bgcolor={"black"}
+            color={"white"}
+            sx={{
+              cursor: "pointer",
+            }}
+          >
+            Notification
+          </Box>
       </Box>
-      <Box
-        textAlign={"center"}
-        width={"100%"}
-        borderRadius={"2px"}
-        mb={1}
-        p={1}
-        bgcolor={"black"}
-        color={"white"}
-        sx={{
-          cursor: "pointer",
-        }}
-      >
-        Notification
-      </Box>
-
       <ConfirmModal confirmOpen={confirmOpen} setConfirmOpen={setConfirmOpen} onClick={() => {googleLogout(); signOut()}}>Are you sure to sign out?</ConfirmModal>
     </Grid>
   );

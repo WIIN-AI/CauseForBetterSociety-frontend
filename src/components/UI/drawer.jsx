@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import { useNavigate } from "react-router";
 
-export default function Drawer({ open = false, setOpen }) {
+export default function NotsigninDrawer({ open = false, setOpen }) {
   const navigate = useNavigate()
   return (
     <>

@@ -6,7 +6,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import { Box, Stack } from "@mui/material";
-import Drawer from "./drawer";
+import NotsigninDrawer from "./drawer";
 import Dialog from "./Dialog";
 import { useNavigate } from "react-router";
 import {loginDetails} from './../../components/loginDetails'
@@ -54,6 +54,8 @@ const TimelineCard = ({ setOpenComment, data }) => {
   const shareLink = function () {
     setOpenShareLink(true);
   };
+
+  console.log(data.image_path)
 
 
   return (
@@ -130,7 +132,7 @@ const TimelineCard = ({ setOpenComment, data }) => {
           </Stack>
         </Box>
       </Box>
-      <Drawer open={open} setOpen={setOpen} />
+      <NotsigninDrawer open={open} setOpen={setOpen} />
       <Dialog setOpenShareLink={setOpenShareLink} openShareLink={openShareLink}>
         {`${window.location.href}post/${data.image_id}`}
       </Dialog>

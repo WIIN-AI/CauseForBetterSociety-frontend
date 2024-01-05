@@ -1,9 +1,8 @@
-import { Box, Container, FormControl, Grid, InputLabel, MenuItem, Select, Stack, TextField } from "@mui/material";
+import { Box, Container, MenuItem, Stack, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {loginDetails} from '../components/loginDetails'
 import ConfirmModal from "../components/UI/confirmModal";
-import { red } from "@mui/material/colors";
 
 export const TextInputProps = {
   InputLabelProps:{
@@ -48,6 +47,7 @@ const CreatePost = () => {
     setImage(e.target.files[0]);
     const imageFile = e.target.files[0];
     const imageURL = URL.createObjectURL(imageFile);
+    console.log(imageURL)
     setImageUrl(imageFile?.name);
   }
 
@@ -80,7 +80,7 @@ const CreatePost = () => {
     const formData = new FormData();
     formData.append('file', image);
     try {
-      const response = await fetch(`${process.env.REACT_APP_API}/add_image/?heading=${subject}&description=${story.replace(/\n/g, "<br />")}&subheading=${subheading}&user_visibility=${userVisiblity}&location=${location}&email=${userDetails.email}`, {
+      const response = await fetch(`${process.env.REACT_APP_API}/add_image/?heading=${subject}&description=${story.replace(/\n/g, "<br />")}&subheading=${subheading.trim()}&user_visibility=${userVisiblity}&location=${location}&email=${userDetails.email}`, {
         method: "POST",
         body: formData,
         onUploadProgress: (progressEvent) => {

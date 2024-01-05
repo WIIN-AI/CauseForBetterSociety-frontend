@@ -6,13 +6,14 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ShareIcon from "@mui/icons-material/Share";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import Drawer from "../components/UI/drawer";
+import NotsigninDrawer from "../components/UI/drawer";
 import RequestSection from "../components/UI/requestSection";
 import Dialog from "../components/UI/Dialog";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useParams } from "react-router";
 import {loginDetails} from '../components/loginDetails'
 import CommentDrawer from "../components/UI/commentsDrawer";
+import RequestDialog from "../components/UI/RequestDialog";
 
 
 
@@ -25,6 +26,8 @@ const PostDetails = ({openComment, setOpenComment}) => {
   const [save, setSave] = useState(false);
   const [open, setOpen] = useState(false);
   const [openShareLink, setOpenShareLink] = useState(false);
+  const [requestDialog, setRequestDialog] = useState(false);
+
   const [data, setData]= useState([])
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -89,8 +92,18 @@ const PostDetails = ({openComment, setOpenComment}) => {
     setAnchorEl(event.currentTarget);
   };
   
-  const handleClose = () => {
+  const handleClose = (e) => {
     setAnchorEl(null);
+    if(e.target.value === 0){
+      setRequestDialog(true); 
+      console.log(1)
+    }
+    if(e.target.value === 1){
+      setTimeout(()=>{
+        alert('reported successfully')
+      },200)
+      clearTimeout()
+    }
   };
 
   function ChatBubbleWithText({children, onClick }) {
@@ -111,6 +124,7 @@ const PostDetails = ({openComment, setOpenComment}) => {
     );
   }
 
+  const menuList = ["Request to complete", "Report"]
 
   
 
@@ -158,8 +172,9 @@ const PostDetails = ({openComment, setOpenComment}) => {
               open={moreOpen}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>Request to complete</MenuItem>
-              <MenuItem onClick={handleClose}>Report</MenuItem>
+              {menuList.map((value, i) => {
+              return <MenuItem value={i} onClick={handleClose}>{value}</MenuItem>
+              })}
             </Menu>
           </Box>
           <br />
@@ -188,12 +203,15 @@ const PostDetails = ({openComment, setOpenComment}) => {
         </Box>
       </Box>
       <Divider style={{ marginBottom: "50px" }} />
-      <Drawer open={open} setOpen={setOpen} />
       <CommentDrawer data={id} open={openComment} setOpen={setOpenComment} />
       <RequestSection id={id} />
-      <Dialog setOpenShareLink={setOpenShareLink} openShareLink={openShareLink}>
+
+      <Dialog setOpenLink={setOpenShareLink} openLink={openShareLink}>
         {window.location.href}
       </Dialog>
+      
+      <RequestDialog setOpenLink={setRequestDialog} openLink={requestDialog}/>
+      <NotsigninDrawer open={open} setOpen={setOpen} />
     </Container>
   );
 };
