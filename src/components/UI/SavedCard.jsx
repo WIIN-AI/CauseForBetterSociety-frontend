@@ -10,22 +10,40 @@ import { useNavigate } from 'react-router';
 import { loginDetails } from '../loginDetails';
 import Drawer from './drawer';
 import Dialog from "./Dialog";
+import DeleteIcon from '@mui/icons-material/Delete';
+import ConfirmModal from './confirmModal';
 
 
-const SavedCard = ({ setOpenComment, data, id }) => {
-  const [like, setLike] = useState(false);
-  const [save, setSave] = useState(false);
+const SavedCard = ({ setOpenComment, data, setReload }) => {
+  const [like, setLike] = useState(data.you_liked);
+  const [save, setSave] = useState(data.you_saved);
   const [open, setOpen] = useState(false);
   const [openShareLink, setOpenShareLink] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
 
   const matches = useMediaQuery('(min-width:900px)');
 
   const navigate = useNavigate();
+
+  const userDetails = JSON.parse(localStorage.getItem('userDetails'));
   const login  = loginDetails.login
 
-  const getLike = function () {
+  function getLike () {
     if (login) {
-      setLike((e) => !e);
+      fetch(`${process.env.REACT_APP_API}/liked`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: data.id,
+          email: userDetails.email,
+        })
+      })
+        .then((response) => response.json())
+        .then(() => {
+          setLike((e) => !e);
+        })
+        .catch((err) => console.log(err));
     } else {
       setOpen(true);
     }
@@ -37,19 +55,52 @@ const SavedCard = ({ setOpenComment, data, id }) => {
       setOpenComment(true)
     },300)
     clearTimeout()
-    navigate(`/post/${data.image_id}`)  
+    navigate(`/post/${data.id}`)  
   };
 
   const getSave = function () {
     if (login) {
-      setSave((e) => !e);
+      fetch(`${process.env.REACT_APP_API}/save`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: data.id,
+          email: userDetails.email,
+        })
+      })
+        .then((response) => response.json())
+        .then(() => {
+          setSave((e) => !e);
+        })
+        .catch((err) => console.log(err));
     } else {
       setOpen(true);
     }
-  };
+  } 
 
   const shareLink = function () {
     setOpenShareLink(true);
+  };
+
+
+  function deletePost() {
+    fetch(`${process.env.REACT_APP_API}/delete`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: data.id,
+        email: userDetails.email,
+        image: data.imagepath
+      })
+    })
+      .then((response) => response.json())
+      .then(() => {
+        setConfirmOpen(false)
+      })
+      .catch((err) => console.log(err))
+      .finally(() =>{
+        setReload(e => !e)
+      });
   };
 
 
@@ -71,21 +122,20 @@ const SavedCard = ({ setOpenComment, data, id }) => {
       >
         <Box>
             <img
-              onClick={() => navigate(`/post/${data.image_id}`)}
+              onClick={() => navigate(`/post/${data.id}`)}
               style={{ height: "150px", width: "100%",objectFit :"cover" , borderRadius: "3px 3px 0 0"}}
-              // src={data.filename}
-              src="https://img.freepik.com/free-photo/sunset-time-tropical-beach-sea-with-coconut-palm-tree_74190-1075.jpg"
+              src={data.imagepath}
               alt={data.filename}
             />
           <Box p={'1vh'} flexDirection={"column"} width={"100%"}>
-            <div onClick={() => navigate(`/post/${data.image_id}`)} style={{textAlign: "left" }}>
+            <div onClick={() => navigate(`/post/${data.id}`)} style={{textAlign: "left" }}>
               <p style={{ marginBottom: "5px" }} className="regular">
-                Published on {data.date}
+                Published on {data.createdAt}
               </p>
               <p className= {`font-600 ${!matches? 'regular' : 'medium'}`} style={{ marginBottom: "2px" }}>
                 {data.heading}
               </p>
-              <p className="text-warp regular font-300">{data.description.split('<br />').map(e => (e))}</p>
+              <p className="text-warp regular font-300">{data.description.split('<br />').join(" ")}</p>
             </div>
             </Box>
             <Box>
@@ -110,6 +160,11 @@ const SavedCard = ({ setOpenComment, data, id }) => {
                     onClick={shareLink}
                     style={{ margin: "0px 10px 6px", display: "flex" }}
                   />
+                  {userDetails.email === data.email &&
+                  <DeleteIcon
+                    onClick={()=> setConfirmOpen(true)}
+                    style={{ margin: "0px 10px 6px", display: "flex" }}
+                  />}
             </Stack>
 
               <Stack right={'1vh'} bottom={'1vh'} flexDirection={"row"} justifyContent={"space-between"} position={"absolute"} >
@@ -129,9 +184,10 @@ const SavedCard = ({ setOpenComment, data, id }) => {
         </Box>
       </Box>
       <Drawer open={open} setOpen={setOpen} />
-        <Dialog setOpenShareLink={setOpenShareLink} openShareLink={openShareLink}>
+        <Dialog setOpenLink={setOpenShareLink} openLink={openShareLink}>
           {`${window.location.href}post/${data.image_id}`}
         </Dialog>
+        <ConfirmModal confirmOpen={confirmOpen} setConfirmOpen={setConfirmOpen} onClick={deletePost}>Are you sure to delete this post?</ConfirmModal>
     </Grid>
   );
 }

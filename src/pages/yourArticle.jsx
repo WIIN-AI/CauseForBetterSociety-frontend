@@ -1,5 +1,5 @@
 import { Container, Grid, useMediaQuery } from '@mui/material'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Menu from '../components/UI/Menu'
 import Loader from '../components/UI/loader/Loader'
 import SavedCard from '../components/UI/SavedCard'
@@ -16,14 +16,15 @@ const MyArticle = ({setOpenComment}) => {
     !login && navigate('/')
   },[login ,navigate])
 
-  const {data : totalData , pending , error} = useFetch(`${process.env.REACT_APP_API}/get_images/`)
-  error && alert(error)
+  const[reload, setReload] = useState(false)
 
   const userDetails = JSON.parse(localStorage.getItem('userDetails'));
-  const yourArticleData = totalData.filter(e => e.email === userDetails.email)
+  const {data : totalData , pending, error} = useFetch(`${process.env.REACT_APP_API}/your_articles?email=${userDetails.email}` ,reload)
+  error && alert(error)
+
+  const yourArticleData = totalData
 
   const matches = useMediaQuery('(min-width:900px)');
-
 
   return (
     <Grid mt={8} marginX={1} className="flex">
@@ -34,7 +35,8 @@ const MyArticle = ({setOpenComment}) => {
         {yourArticleData.length === 0 && !pending && <p className='medium font-400'>No Articles are found</p>}
         <Grid container flexDirection={'row'} item columnSpacing={2} rowSpacing={2}>
         {pending && <Loader/>}
-        {yourArticleData.map((data, i) => <SavedCard key={i} data={data} id={i} setOpenComment={setOpenComment} />)}
+        {!pending && yourArticleData.length !== 0 && 
+        yourArticleData.map((data, i) => <SavedCard key={i} data={data} id={i} setOpenComment={setOpenComment} setReload={setReload} />)}
         </Grid>
       </Container>
       </Grid>

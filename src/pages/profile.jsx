@@ -15,11 +15,11 @@ const Profile = () => {
   },[login ,navigate])
 
   const userDetails = JSON.parse(localStorage.getItem('userDetails'));
-  const firstLetter = userDetails.name.slice(0,1).toUpperCase()
+  const firstLetter = userDetails?.name.slice(0,1).toUpperCase()
   const matches = useMediaQuery('(min-width:900px)');
 
 
-  const image = ""
+  const image = userDetails?.picture
 
 
   return (
@@ -49,8 +49,8 @@ const Profile = () => {
           {image !=='' ? <img style={{borderRadius: '50%'}} src={image} alt='profile_image'/> : firstLetter}
         </Box>
         <br/>
-        <p className='heading font-700 capitalize'>{userDetails.name}</p>
-        <p className='font-400'>Email : {userDetails.email}</p>
+        <p className='heading font-700 capitalize'>{userDetails?.name}</p>
+        <p className='font-400'>Email : {userDetails?.email}</p>
         <br/>
         <Divider><p className='font-500'>Security</p></Divider>
         <br/>

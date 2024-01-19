@@ -121,7 +121,7 @@ const MobileMenu = ({open = false, setOpen }) => {
           Contact us
         </Box>
         {login && <Box
-          onClick={() => {navigate("/out"); setOpen(false)}}
+          onClick={() => setConfirmOpen(true)}
           sx={{
             cursor: "pointer", borderBottom : "1px solid #e2e2e2", padding: "15px 5px"
           }}

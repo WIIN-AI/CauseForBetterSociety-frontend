@@ -72,10 +72,13 @@ export default function RequestDialog({ setOpenLink, openLink, children}) {
       >
       <Container maxWidth="sm" sx={{marginBottom: '20px' , padding: 0}}>
       <form onSubmit={formSubmitHandler}>
-        <DialogTitle id="responsive-dialog-title">{"Request to complete"}</DialogTitle>
+        {/* <DialogTitle id="responsive-dialog-title">{"Request to complete"}</DialogTitle> */}
         <DialogContent>
           <DialogContentText>
             <Box minHeight={'20vh'} width={'50vh'}>
+              <Box marginY={1}>
+                <p className="font-black medium font-600">Fill your details to close this issue</p>
+              </Box>
             {imageUrl !== null && <Box
               display={"flex"}
               alignItems={"center"}
@@ -83,12 +86,14 @@ export default function RequestDialog({ setOpenLink, openLink, children}) {
               color={"black"} 
               height={50}
               borderRadius={1} 
-              sx={{width:'100%', border: "2px solid #00000020", margin: "5px 0 10px"}} 
+              marginY={1}
+              sx={{width:'100%', border: "2px solid #00000020"}} 
               p={2}>
                 {imageUrl}
               </Box>}
                 <TextField
                   fullWidth
+                  marginY={1}
                   required
                   id="outlined-multiline-static"
                   label="your request text"
@@ -104,6 +109,7 @@ export default function RequestDialog({ setOpenLink, openLink, children}) {
                   display={"flex"}
                   bgcolor={"#BF3131"} 
                   color={"white"} 
+                  marginY={1}
                   borderRadius={1} 
                   sx={{width:'100%'}} 
                   justifyContent={"space-between"} 
@@ -121,18 +127,19 @@ export default function RequestDialog({ setOpenLink, openLink, children}) {
                     placeholder="upload the image here"
                     inputProps={{accept:"image/jpeg"}}
                     {...TextInputProps}
+                    marginY={1}
                   /> }
+                  </Box>
+                  <Box marginTop={2} textAlign={"right"}>
+                    <button type="submit" className="button">
+                      submit
+                    </button>
+                    <button className="reset" type="reset" onClick={handleClose}>
+                      close
+                    </button>
                   </Box>
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-            <button type="submit" className="button">
-              submit
-            </button>
-            <button className="reset" type="reset" onClick={handleClose}>
-              close
-            </button>
-        </DialogActions>
         </form>
         </Container>
       </Dialog>

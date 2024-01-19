@@ -8,7 +8,7 @@ import Menu from "../components/UI/Menu";
 
 const Home = ({setOpenComment}) => {
 
-  const {data : timelineCardData , pending , error} = useFetch(`${process.env.REACT_APP_API}/get_images/`)
+  const {data : timelineCardData , pending , error} = useFetch(`${process.env.REACT_APP_API}/post`)
   error && alert(error)
 
   const matches = useMediaQuery('(min-width:900px)');

@@ -10,7 +10,7 @@ import { useTheme } from "@mui/material/styles";
 import { Box, TextField } from "@mui/material";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
-export default function ResponsiveDialog({ setOpenLink, openLink, children}) {
+export default function ResponsiveDialog({ setOpenLink, openLink = false, children}) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 

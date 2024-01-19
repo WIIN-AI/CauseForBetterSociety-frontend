@@ -1,5 +1,5 @@
 import { Container, Grid, useMediaQuery } from '@mui/material'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Menu from '../components/UI/Menu'
 import SavedCard from '../components/UI/SavedCard'
 import useFetch from '../components/hooks/useFetch'
@@ -16,7 +16,10 @@ const SavedPost = ({setOpenComment}) => {
     !login && navigate('/')
   },[login ,navigate])
 
-  const {data : savedCardData , pending , error} = useFetch(`${process.env.REACT_APP_API}/get_images/`)
+  const[reload, setReload] = useState(false)
+
+  const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+  const {data : savedCardData , pending, error } = useFetch(`${process.env.REACT_APP_API}/your_saved?email=${userDetails.email}`, reload)
   error && alert(error)
 
   const matches = useMediaQuery('(min-width:900px)');
@@ -31,7 +34,7 @@ const SavedPost = ({setOpenComment}) => {
         {savedCardData.length === 0 && !pending && <p className='medium font-400'>No saved posts found</p>}
         <Grid container flexDirection={'row'} item columnSpacing={2} rowSpacing={2}>
         {pending && <Loader/>}
-        {savedCardData.map((data, i) => <SavedCard key={i} data={data} id={i} setOpenComment={setOpenComment} />)}
+        {!pending && savedCardData.length !== 0 && savedCardData.map((data, i) => <SavedCard key={i} data={data} setReload={setReload} setOpenComment={setOpenComment} />)}
         </Grid>
       </Container>
       </Grid>

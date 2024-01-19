@@ -5,12 +5,15 @@ const useFetch = (url, refetch) => {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState(null);
 
+  console.log(refetch)
+
   useEffect(() => {
     setPending(true);
-    setTimeout( async() => {
-     fetch(url, {
+    setTimeout(async () => {
+      fetch(url, {
         method: "GET",
         // credentials: "include",
+        // mode: "no-cors",
         headers: { "Content-Type": "application/json" },
       })
         .then((response) => {

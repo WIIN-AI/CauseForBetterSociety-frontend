@@ -14,21 +14,35 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 
 
-const TimelineCard = ({ setOpenComment, data }) => {
-  const [like, setLike] = useState(false);
-  const [save, setSave] = useState(false);
+const   TimelineCard = ({ setOpenComment, data }) => {
+  const [like, setLike] = useState(data.you_liked);
+  const [save, setSave] = useState(data.you_saved);
   const [open, setOpen] = useState(false);
   const [openShareLink, setOpenShareLink] = useState(false);
 
   const matches = useMediaQuery('(min-width:900px)');
   const mobilematches = useMediaQuery('(min-width:600px)');
 
+  const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+
   const navigate = useNavigate();
   const login  = loginDetails.login
 
-  const getLike = function () {
+  const getLike = function() {
     if (login) {
-      setLike((e) => !e);
+      fetch(`${process.env.REACT_APP_API}/liked`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: data.id,
+          email: userDetails.email,
+        })
+      })
+        .then((response) => response.json())
+        .then(() => {
+          setLike((e) => !e);
+        })
+        .catch((err) => console.log(err));
     } else {
       setOpen(true);
     }
@@ -40,23 +54,33 @@ const TimelineCard = ({ setOpenComment, data }) => {
       setOpenComment(true)
     },300)
     clearTimeout()
-    navigate(`/post/${data.image_id}`)  
+    navigate(`/post/${data.id}`)  
   };
 
   const getSave = function () {
     if (login) {
-      setSave((e) => !e);
+      fetch(`${process.env.REACT_APP_API}/save`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: data.id,
+          email: userDetails.email,
+        })
+      })
+        .then((response) => response.json())
+        .then(() => {
+          setSave((e) => !e);
+        })
+        .catch((err) => console.log(err));
     } else {
       setOpen(true);
     }
-  };
+  } 
 
   const shareLink = function () {
+    console.log("hello")
     setOpenShareLink(true);
   };
-
-  console.log(data.image_path)
-
 
   return (
     <Box
@@ -74,22 +98,24 @@ const TimelineCard = ({ setOpenComment, data }) => {
       }}
     >
       <Box className="flex">
+        <div>
           <img
-            onClick={() => navigate(`/post/${data.image_id}`)}
-            style={{ height: "127px", width: "127px", borderRadius: 3 }}
+            onClick={() => navigate(`/post/${data.id}`)}
+            style={{ height: "127px", width: "127px", borderRadius: 3 , objectFit: "cover" }}
             // src={data.filename}
-            src="https://img.freepik.com/free-photo/sunset-time-tropical-beach-sea-with-coconut-palm-tree_74190-1075.jpg"
+            src={data.imagepath}
             alt={data.filename}
           />
+        </div>
         <Box className="flex" flexDirection={"column"} width={ !mobilematches ? "76%" : '100%'} pl={2}>
-          <div onClick={() => navigate(`/post/${data.image_id}`)} style={{ textAlign: "left", marginTop: "5px" }}>
+          <div onClick={() => navigate(`/post/${data.id}`)} style={{ textAlign: "left", marginTop: "5px" }}>
             <p style={{ marginBottom: "5px" }} className="regular">
-              Published on {data.date}
+              Published on {data.createdAt}
             </p>
-            <p className= {`font-700 ${!mobilematches? 'regular' : 'medium'}`}>
+            <p className= {`font-600 ${!mobilematches? 'regular' : 'medium'}`}>
               {data.heading}
             </p>
-            <p style={{width: '70%'}} className="font-Nota text-warp regular font-500">{data.description.split('<br />').map(e => (e))}</p>
+            <p style={{width: '70%'}} className="font-Nota text-warp regular font-500">{data.description.split('<br />').join(" ")}</p>
           </div>
             <br />
 
@@ -133,8 +159,8 @@ const TimelineCard = ({ setOpenComment, data }) => {
         </Box>
       </Box>
       <NotsigninDrawer open={open} setOpen={setOpen} />
-      <Dialog setOpenShareLink={setOpenShareLink} openShareLink={openShareLink}>
-        {`${window.location.href}post/${data.image_id}`}
+      <Dialog setOpenLink={setOpenShareLink} openLink={openShareLink}>
+        {`${window.location.href}post/${data.id}`}
       </Dialog>
     </Box>
   );

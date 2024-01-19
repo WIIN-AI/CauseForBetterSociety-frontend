@@ -24,7 +24,7 @@ export default function ConfirmModal({children, confirmOpen, setConfirmOpen, ...
       >
         <DialogTitle>{children}</DialogTitle>
         <DialogActions>
-          <button className='button' {...props}>Okay</button>
+          <button className='button' {...props}>Yes</button>
           <button className='reset' onClick={()=>setConfirmOpen(false)}>Cancel</button>
         </DialogActions>
       </Dialog>

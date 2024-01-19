@@ -10,10 +10,11 @@ import NotsigninDrawer from "../components/UI/drawer";
 import RequestSection from "../components/UI/requestSection";
 import Dialog from "../components/UI/Dialog";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import {loginDetails} from '../components/loginDetails'
 import CommentDrawer from "../components/UI/commentsDrawer";
 import RequestDialog from "../components/UI/RequestDialog";
+import ConfirmModal from "../components/UI/confirmModal";
 
 
 
@@ -21,12 +22,15 @@ const PostDetails = ({openComment, setOpenComment}) => {
   const { id } = useParams("");
   const myRef = useRef(null);  
 
+  const navigate = useNavigate()
+
 
   const [like, setLike] = useState(false);
   const [save, setSave] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [loginPop, setLoginPop] = useState(false);
   const [openShareLink, setOpenShareLink] = useState(false);
   const [requestDialog, setRequestDialog] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const [data, setData]= useState([])
 
@@ -35,40 +39,73 @@ const PostDetails = ({openComment, setOpenComment}) => {
   const [paragraph, setParagraph] = useState([])
 
   const matches = useMediaQuery('(min-width:900px)');
-
+  const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+  const login  = loginDetails.login
   
   useEffect(() => {
-    async function fetchData(){
+    async function fetchData(ipAddress){
     try {
-      const response = await fetch(`${process.env.REACT_APP_API}/get_single_incident_details?image_id=${id}`, {
-        method: "GET",
+      const response = await fetch(`${process.env.REACT_APP_API}/post_details`, {
+        method: "POST",
         // credentials: "include",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          "id" : id,
+          "ip" : ipAddress,
+          "email": userDetails && userDetails.email 
+        })
       })
       const result = await response.json();
       console.log("Success:", result);
       setData(result)
-      const spiltLine = result.description.split('<br />')
+      const spiltLine = result?.description.split('<br />')
       setParagraph(spiltLine)
+      setLike(result.you_liked)
+      setSave(result.you_saved)
     }
     catch(error){
       console.log(error)
     }
   }
-  fetchData()
+      fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data =>  fetchData(data.ip))
+
   }, [id]);
 
 
+    // useEffect(() => {
+    //   fetch('https://api.ipify.org?format=json')
+    //     .then(response => response.json())
+    //     .then(data => fetch(`${process.env.REACT_APP_API}/take_view`,{
+    //       headers: { "Content-Type": "application/json" },
+    //       method: "POST",
+    //       body: JSON.stringify({
+    //         "id" : id,
+    //         "ip" : data.ip,
+    //       })
+    //   }))
+    //     .catch(error => console.log(error))
+    // }, [id]);
 
 
-
-  const login  = loginDetails.login
-
-  const getLike = function () {
+  const getLike = function() {
     if (login) {
-      setLike((e) => !e);
+      fetch(`${process.env.REACT_APP_API}/liked`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: id,
+          email: userDetails.email,
+        })
+      })
+        .then((response) => response.json())
+        .then(() => {
+          setLike((e) => !e);
+        })
+        .catch((err) => console.log(err));
     } else {
-      setOpen(true);
+      setLoginPop(true);
     }
   };
 
@@ -78,11 +115,23 @@ const PostDetails = ({openComment, setOpenComment}) => {
 
   const getSave = function () {
     if (login) {
-      setSave((e) => !e);
+      fetch(`${process.env.REACT_APP_API}/save`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: id,
+          email: userDetails.email,
+        })
+      })
+        .then((response) => response.json())
+        .then(() => {
+          setSave((e) => !e);
+        })
+        .catch((err) => console.log(err));
     } else {
-      setOpen(true);
+      setLoginPop(true);
     }
-  };
+  } 
 
   const shareLink = function () {
     setOpenShareLink(true);
@@ -94,17 +143,47 @@ const PostDetails = ({openComment, setOpenComment}) => {
   
   const handleClose = (e) => {
     setAnchorEl(null);
-    if(e.target.value === 0){
-      setRequestDialog(true); 
-      console.log(1)
-    }
-    if(e.target.value === 1){
-      setTimeout(()=>{
-        alert('reported successfully')
-      },200)
-      clearTimeout()
-    }
+    if(login){
+      if(e.target.value === 0){
+        setRequestDialog(true); 
+        console.log(1)
+      }
+      if(e.target.value === 1){
+        setTimeout(()=>{
+          alert('reported successfully')
+        },200)
+        clearTimeout()
+      }
+      if(e.target.value === 2){
+        setConfirmOpen(true)
+      }
+    }else{
+      setLoginPop(true);
+    }   
   };
+
+
+  function deletePost() {
+
+    fetch(`${process.env.REACT_APP_API}/delete`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: data.id,
+        email: userDetails.email,
+        image: data.imagepath
+      })
+    })
+      .then((response) => response.json())
+      .then(() => {
+        setConfirmOpen(false)
+      })
+      .catch((err) => console.log(err))
+      .finally(() =>{
+        navigate(-1)
+      });
+};
+
 
   function ChatBubbleWithText({children, onClick }) {
     return (
@@ -124,9 +203,7 @@ const PostDetails = ({openComment, setOpenComment}) => {
     );
   }
 
-  const menuList = ["Request to complete", "Report"]
-
-  
+  const menuList = data.email === userDetails?.email ? ["Request to complete", "Report", "Delete post"] : ["Request to complete", "Report"]
 
   return (
     <Container maxWidth="md" style={{ padding : matches && "0 100px"}}>
@@ -135,8 +212,8 @@ const PostDetails = ({openComment, setOpenComment}) => {
           <p className="heading font-700">{data.heading}</p>
           <br />
           <Box className="flex center" justifyContent={"space-between"}>
-            <p className="font-500">User : {data.user_visibility ? data.email?.split('@')[0] : data.uuid?.slice(0,8)}</p>
-            <p style={{ opacity: "70%" }}>Published on {data.date}</p>
+            <p className="font-500">User : {data.name}</p>
+            <p>Published on {data.createdAt}</p>
           </Box>
           <Box className="flex center" justifyContent={"space-between"}>
             <p className="font-500">
@@ -180,7 +257,7 @@ const PostDetails = ({openComment, setOpenComment}) => {
           <br />
           <img
             width={"100%"}
-            src="https://i.pinimg.com/originals/cf/e8/5e/cfe85ed3a39d1bcb65b5da5c4f75b363.jpg"
+            src={data.imagepath}
             alt="post_image"
             style={{
               marginBottom: "20px",
@@ -203,7 +280,7 @@ const PostDetails = ({openComment, setOpenComment}) => {
         </Box>
       </Box>
       <Divider style={{ marginBottom: "50px" }} />
-      <CommentDrawer data={id} open={openComment} setOpen={setOpenComment} />
+      <CommentDrawer data={id} loginPop={openComment} setLoginPop={setOpenComment} />
       <RequestSection id={id} />
 
       <Dialog setOpenLink={setOpenShareLink} openLink={openShareLink}>
@@ -211,7 +288,10 @@ const PostDetails = ({openComment, setOpenComment}) => {
       </Dialog>
       
       <RequestDialog setOpenLink={setRequestDialog} openLink={requestDialog}/>
-      <NotsigninDrawer open={open} setOpen={setOpen} />
+      <NotsigninDrawer open={loginPop} setOpen={setLoginPop} />
+
+      <ConfirmModal confirmOpen={confirmOpen} setConfirmOpen={setConfirmOpen} onClick={deletePost}>Are you sure to delete this post?</ConfirmModal>
+
     </Container>
   );
 };

@@ -78,9 +78,15 @@ const CreatePost = () => {
   const submit = async function (event) {
 
     const formData = new FormData();
-    formData.append('file', image);
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API}/add_image/?heading=${subject}&description=${story.replace(/\n/g, "<br />")}&subheading=${subheading.trim()}&user_visibility=${userVisiblity}&location=${location}&email=${userDetails.email}`, {
+      formData.append("title", subject);
+      formData.append('image', image);
+      formData.append("description", story.replace(/\n/g, "<br />"))
+      formData.append("sub_heading", subheading.trim())
+      formData.append("visiblity", userVisiblity)
+      formData.append("email", userDetails.email)
+      formData.append("name", userDetails.name)
+      try {
+      const response = await fetch(`${process.env.REACT_APP_API}/upload_post`, {
         method: "POST",
         body: formData,
         onUploadProgress: (progressEvent) => {
@@ -167,7 +173,7 @@ const CreatePost = () => {
               required
               type="file"
               value={imageValue}
-              inputProps={{accept:"image/jpeg"}}
+              inputProps={{accept:"image/jpeg, image/png "}}
               onChange={onImageChange}
               {...TextInputProps}
             /> }
