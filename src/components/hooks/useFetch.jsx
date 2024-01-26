@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 
-const useFetch = (url, refetch) => {
+const useFetch = (url, refetch = false) => {
   const [data, setData] = useState([]);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState(null);
-
-  console.log(refetch)
 
   useEffect(() => {
     setPending(true);

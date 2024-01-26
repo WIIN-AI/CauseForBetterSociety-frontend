@@ -1,8 +1,6 @@
-import { Box, Container, Divider, Menu, MenuItem, Typography, useMediaQuery } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import { Box, Container, Divider, Menu, MenuItem, useMediaQuery } from "@mui/material";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+
 import ShareIcon from "@mui/icons-material/Share";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
@@ -11,19 +9,21 @@ import RequestSection from "../components/UI/requestSection";
 import Dialog from "../components/UI/Dialog";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useNavigate, useParams } from "react-router";
-import {loginDetails} from '../components/loginDetails'
+import {loginDetails, userDetails} from '../components/loginDetails'
 import CommentDrawer from "../components/UI/commentsDrawer";
 import RequestDialog from "../components/UI/RequestDialog";
 import ConfirmModal from "../components/UI/confirmModal";
+import { ChatBubbleWithCount, LikeWithCount} from "../components/otherExports";
+import Loader from "../components/UI/loader/Loader"
+import EditDialog from "../components/UI/EditDialog";
 
 
 
 const PostDetails = ({openComment, setOpenComment}) => {
   const { id } = useParams("");
-  const myRef = useRef(null);  
-
   const navigate = useNavigate()
 
+  const [loading, setLoading] = useState(true);
 
   const [like, setLike] = useState(false);
   const [save, setSave] = useState(false);
@@ -31,6 +31,7 @@ const PostDetails = ({openComment, setOpenComment}) => {
   const [openShareLink, setOpenShareLink] = useState(false);
   const [requestDialog, setRequestDialog] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false)
 
   const [data, setData]= useState([])
 
@@ -39,8 +40,11 @@ const PostDetails = ({openComment, setOpenComment}) => {
   const [paragraph, setParagraph] = useState([])
 
   const matches = useMediaQuery('(min-width:900px)');
-  const userDetails = JSON.parse(localStorage.getItem('userDetails'));
   const login  = loginDetails.login
+  const [likeCount, setlikeCount] = useState(0)
+
+  const postOwner = data.email === userDetails?.email 
+  const [pageRefresh, setPageRefresh] = useState(false)
   
   useEffect(() => {
     async function fetchData(ipAddress){
@@ -58,6 +62,7 @@ const PostDetails = ({openComment, setOpenComment}) => {
       const result = await response.json();
       console.log("Success:", result);
       setData(result)
+      setlikeCount(result.likes)
       const spiltLine = result?.description.split('<br />')
       setParagraph(spiltLine)
       setLike(result.you_liked)
@@ -71,39 +76,39 @@ const PostDetails = ({openComment, setOpenComment}) => {
         .then(response => response.json())
         .then(data =>  fetchData(data.ip))
 
-  }, [id]);
+  }, [id, pageRefresh]);
 
-
-    // useEffect(() => {
-    //   fetch('https://api.ipify.org?format=json')
-    //     .then(response => response.json())
-    //     .then(data => fetch(`${process.env.REACT_APP_API}/take_view`,{
-    //       headers: { "Content-Type": "application/json" },
-    //       method: "POST",
-    //       body: JSON.stringify({
-    //         "id" : id,
-    //         "ip" : data.ip,
-    //       })
-    //   }))
-    //     .catch(error => console.log(error))
-    // }, [id]);
-
+  const EditPost = useCallback(() => openEdit && <EditDialog data={data} open={openEdit} setOpen={setOpenEdit} setPageRefresh={setPageRefresh}/>, [data, openEdit]);
 
   const getLike = function() {
     if (login) {
-      fetch(`${process.env.REACT_APP_API}/liked`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: id,
-          email: userDetails.email,
+        fetch(`${process.env.REACT_APP_API}/liked`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: id,
+            email: userDetails.email,
+          })
         })
-      })
         .then((response) => response.json())
         .then(() => {
           setLike((e) => !e);
+          !like ? setlikeCount((prev) => prev + 1) : setlikeCount((prev) => prev - 1)
         })
         .catch((err) => console.log(err));
+
+        !postOwner && fetch(`${process.env.REACT_APP_API}/notification`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            parent_post_id: id,
+            title : `${userDetails.name} liked your post.`,
+            name: "liked",
+          })
+        })
+          .then((response) => response.json())
+          .then(data => console.log(data))
+          .catch((err) => console.log(err));
     } else {
       setLoginPop(true);
     }
@@ -149,10 +154,26 @@ const PostDetails = ({openComment, setOpenComment}) => {
         console.log(1)
       }
       if(e.target.value === 1){
-        setTimeout(()=>{
-          alert('reported successfully')
-        },200)
-        clearTimeout()
+        if(userDetails.email === data.email && data.requests.length === 0){
+          setOpenEdit(true)
+        }else{
+          setTimeout(()=>{
+            fetch(`${process.env.REACT_APP_API}/reporting`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                id: data.id,
+                email: userDetails.email,
+              })
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                alert(data.message)
+              })
+              .catch((err) => console.log(err))
+          },800)
+          clearTimeout()
+        }  
       }
       if(e.target.value === 2){
         setConfirmOpen(true)
@@ -182,28 +203,21 @@ const PostDetails = ({openComment, setOpenComment}) => {
       .finally(() =>{
         navigate(-1)
       });
-};
+  };
+
+  const targetRef = useRef(null);
+
+  // const handleScroll = () => {
+  //   if (targetRef.current) {
+  //     targetRef.current.scrollIntoView({ behavior: 'smooth' });
+  //   }
+  // };
+  // showResponse && handleScroll()
 
 
-  function ChatBubbleWithText({children, onClick }) {
-    return (
-      <div onClick={onClick} className="flex">
-        <ChatBubbleOutlineIcon />
-        <Typography ml={1}>{children}</Typography>
-      </div>
-    );
-  }
-
-  function LikeWithText({children, onClick }) {
-    return (
-      <div onClick={onClick} className="flex">
-        {like ? ( <FavoriteIcon color="error" onClick={getLike} /> ) : (<FavoriteBorderIcon onClick={getLike} />)}
-        <Typography ml={1}>{children}</Typography>
-      </div>
-    );
-  }
-
-  const menuList = data.email === userDetails?.email ? ["Request to complete", "Report", "Delete post"] : ["Request to complete", "Report"]
+  const menuList = (postOwner && data.requests?.length === 0) ? 
+  ["Response on requests", "Edit post", "Delete post"] : 
+  [`${postOwner ? "Response on requests" : "Request to complete"}`, "Report"]
 
   return (
     <Container maxWidth="md" style={{ padding : matches && "0 100px"}}>
@@ -218,11 +232,11 @@ const PostDetails = ({openComment, setOpenComment}) => {
           <Box className="flex center" justifyContent={"space-between"}>
             <p className="font-500">
               Issue :{" "}
-              <span className="font-500 uppercase" style={{ color: "red" }}>
-                pending
+              <span className="font-500 uppercase" style={{ color: `${data.status === "pending" && "red"}` }}>
+                {data.status}
               </span>
             </p>
-            <p>{data.location}</p>
+            <p>{data.state}, {data.district}</p>
           </Box>
           <br />
           <Box
@@ -238,11 +252,11 @@ const PostDetails = ({openComment, setOpenComment}) => {
               borderStyle: "solid hidden",
             }}
           >
-            <LikeWithText>{data.comments?.length > 0 ? data.comments?.length : "" }</LikeWithText>
-            <ChatBubbleWithText onClick={getComments}>{data.comments?.length > 0 ? data.comments?.length : "" }</ChatBubbleWithText>
+            <LikeWithCount getLike={getLike} onClick={onclick} like={like}>{likeCount > 0 && likeCount }</LikeWithCount>
+            <ChatBubbleWithCount onClick={getComments}>{data.comments > 0 && data.comments }</ChatBubbleWithCount>
             <ShareIcon onClick={shareLink} />
             {save ? (<BookmarkIcon onClick={getSave} />) : (<BookmarkBorderIcon onClick={getSave} />)}
-            <MoreHorizIcon onClick={handleClick} />
+            {(data.status === "pending" || postOwner) && <MoreHorizIcon onClick={handleClick} />}
             <Menu
               id="basic-menu"
               anchorEl={anchorEl}
@@ -250,19 +264,25 @@ const PostDetails = ({openComment, setOpenComment}) => {
               onClose={handleClose}
             >
               {menuList.map((value, i) => {
-              return <MenuItem value={i} onClick={handleClose}>{value}</MenuItem>
+              return <MenuItem value={i} key={i} onClick={handleClose}>{value}</MenuItem>
               })}
             </Menu>
           </Box>
           <br />
-          <img
-            width={"100%"}
-            src={data.imagepath}
-            alt="post_image"
-            style={{
-              marginBottom: "20px",
-            }}
-          />
+          <Box width={"100%"}>
+            {loading && <Loader/> }
+            <img
+              width={"100%"}
+              src={data.imagepath}
+              alt="post_image"
+              onLoad={() => {setLoading(false)}}
+              style={{
+                marginBottom: "20px",
+                display:` ${loading ? "none" : "block"}`
+              }}
+            />
+          </Box>
+          <Box>Post seen : {data.views}</Box>
           <br />
           {data.subheading && <><p style={{whiteSpace: "pre-wrap"}} className="sub-heading font-700">
               {data.subheading}
@@ -279,19 +299,20 @@ const PostDetails = ({openComment, setOpenComment}) => {
           <br/>
         </Box>
       </Box>
-      <Divider style={{ marginBottom: "50px" }} />
-      <CommentDrawer data={id} loginPop={openComment} setLoginPop={setOpenComment} />
-      <RequestSection id={id} />
+      <EditPost/>
+      <Divider style={{ marginBottom: "50px" }} ref={targetRef} />
+      <CommentDrawer data={data} id={id} open={openComment} setOpen={setOpenComment} />
+      {data.requests && <RequestSection data={data} setPageRefresh={setPageRefresh} />}
 
       <Dialog setOpenLink={setOpenShareLink} openLink={openShareLink}>
         {window.location.href}
       </Dialog>
       
-      <RequestDialog setOpenLink={setRequestDialog} openLink={requestDialog}/>
+      <RequestDialog data={data} setOpenLink={setRequestDialog} openLink={requestDialog} id={id}/>
       <NotsigninDrawer open={loginPop} setOpen={setLoginPop} />
+      {(console.log(data))}
 
       <ConfirmModal confirmOpen={confirmOpen} setConfirmOpen={setConfirmOpen} onClick={deletePost}>Are you sure to delete this post?</ConfirmModal>
-
     </Container>
   );
 };

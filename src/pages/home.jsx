@@ -6,15 +6,20 @@ import Loader from "../components/UI/loader/Loader";
 import Menu from "../components/UI/Menu";
 
 
-const Home = ({setOpenComment}) => {
+const Home = ({setOpenComment, search, setSearch}) => {
 
-  const {data : timelineCardData , pending , error} = useFetch(`${process.env.REACT_APP_API}/post`)
+  const {data : timelineCardData , pending , error} = useFetch(`${process.env.REACT_APP_API}/post?status=pending`)
+  
+  const timelineData = timelineCardData.filter((value) => 
+    (value.state.toLowerCase().includes(search.toLowerCase()))|| 
+    (value.district.toLowerCase().includes(search.toLowerCase()))
+  )
   error && alert(error)
 
   const matches = useMediaQuery('(min-width:900px)');
 
   return (
-    <Grid mt={8} marginX={1} className="flex">
+    <Grid mt={8} mb={5} marginX={1} className="flex">
       <Grid container md={8} item display={"block"}>
       <Container maxWidth={matches && "sm"} >
         <p className='medium font-600'>Your timeline</p>
@@ -22,11 +27,11 @@ const Home = ({setOpenComment}) => {
         {timelineCardData.length === 0 && !pending && <p className='medium font-400'>No pending issues found</p>}
         <Grid flexDirection={'row'} item columnSpacing={2}>
         {pending && <Loader/>}
-        {timelineCardData.map((data, i) => <TimelineCard key={i} data={data} setOpenComment={setOpenComment} />)}
+        {timelineData.map((data, i) => <TimelineCard key={i} data={data} setOpenComment={setOpenComment} />)}
       </Grid>
       </Container>
       </Grid>
-      <Menu/>
+      <Menu search={search} setSearch={setSearch}/>
     </Grid>
   );
 };

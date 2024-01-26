@@ -73,6 +73,17 @@
   /* border: none; */
 }
 
+.buttonDis{
+  width: 100px;
+  height: 40px;
+  background-color: #f6f6f6;
+  border: none;
+  cursor: default;
+  margin: 0 5px;
+  border-radius: 2px ;
+  /* border: none; */
+}
+
 .reset{
   width: 100px;
   height: 40px;

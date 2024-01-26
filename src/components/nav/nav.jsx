@@ -6,7 +6,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import MobileMenu from "../UI/mobileMenu";
 
 
-const Navbar = () => {
+const Navbar = ({setSearch}) => {
   
   const login  = loginDetails.login
   const navigation = useNavigate()
@@ -40,7 +40,7 @@ const Navbar = () => {
         {matches && !login && <button onClick={()=> navigation('/signup')} className="button">sign up</button>}
         {login && <button onClick={()=> navigation('/create')} className="button">write</button>}       
       </div>
-      <MobileMenu open={open} setOpen={setOpen}/>
+      <MobileMenu open={open} setOpen={setOpen} setSearch={setSearch}/>
     </nav>
   );
 };

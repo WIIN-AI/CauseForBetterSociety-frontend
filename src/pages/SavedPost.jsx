@@ -5,7 +5,7 @@ import SavedCard from '../components/UI/SavedCard'
 import useFetch from '../components/hooks/useFetch'
 import Loader from '../components/UI/loader/Loader'
 import { useNavigate } from 'react-router'
-import { loginDetails } from '../components/loginDetails'
+import { loginDetails, userDetails } from '../components/loginDetails'
 
 const SavedPost = ({setOpenComment}) => {
 
@@ -18,7 +18,6 @@ const SavedPost = ({setOpenComment}) => {
 
   const[reload, setReload] = useState(false)
 
-  const userDetails = JSON.parse(localStorage.getItem('userDetails'));
   const {data : savedCardData , pending, error } = useFetch(`${process.env.REACT_APP_API}/your_saved?email=${userDetails.email}`, reload)
   error && alert(error)
 
@@ -26,7 +25,7 @@ const SavedPost = ({setOpenComment}) => {
 
 
   return (
-    <Grid mt={8} marginX={1} className="flex">
+    <Grid mt={8} mb={5} marginX={1} className="flex">
       <Grid container md={8} item display={"block"}>
       <Container maxWidth={matches && "sm"}>
         <p className='medium font-600'>Saved Posts</p>

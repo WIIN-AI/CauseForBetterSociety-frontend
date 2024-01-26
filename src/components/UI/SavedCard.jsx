@@ -1,4 +1,4 @@
-import { Box, Divider, Grid, Stack, useMediaQuery } from '@mui/material';
+import { Box, Divider, Fab, Grid, Stack, useMediaQuery } from '@mui/material';
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
@@ -7,11 +7,12 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router';
-import { loginDetails } from '../loginDetails';
+import { loginDetails, userDetails } from '../loginDetails';
 import Drawer from './drawer';
 import Dialog from "./Dialog";
 import DeleteIcon from '@mui/icons-material/Delete';
 import ConfirmModal from './confirmModal';
+import { ChatBubbleWithCount, LikeWithCount, ViewWithCount } from '../otherExports';
 
 
 const SavedCard = ({ setOpenComment, data, setReload }) => {
@@ -26,8 +27,12 @@ const SavedCard = ({ setOpenComment, data, setReload }) => {
 
   const navigate = useNavigate();
 
-  const userDetails = JSON.parse(localStorage.getItem('userDetails'));
   const login  = loginDetails.login
+
+  const [likeCount, setlikeCount] = useState(data.likes)
+
+  const postOwner = data.email === userDetails?.email 
+
 
   function getLike () {
     if (login) {
@@ -42,8 +47,22 @@ const SavedCard = ({ setOpenComment, data, setReload }) => {
         .then((response) => response.json())
         .then(() => {
           setLike((e) => !e);
+          !like ? setlikeCount((prev) => prev + 1) : setlikeCount((prev) => prev - 1)
         })
         .catch((err) => console.log(err));
+
+        !postOwner && !like && fetch(`${process.env.REACT_APP_API}/notification`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            parent_post_id: data.id,
+            title : `${userDetails.name} liked your post.`,
+            name: "liked",
+          })
+        })
+          .then((response) => response.json())
+          .then(data => console.log(data))
+          .catch((err) => console.log(err));
     } else {
       setOpen(true);
     }
@@ -120,6 +139,10 @@ const SavedCard = ({ setOpenComment, data, setReload }) => {
           paddingBottom: '40px'
         }}
       >
+        {(data.email === userDetails?.email && data.requests.length === 0) &&
+        <Fab size='small'onClick={()=> setConfirmOpen(true)} color='error' style={{top: 10, right: 10 ,position: "absolute"}}>
+          <DeleteIcon/>
+        </Fab>}
         <Box>
             <img
               onClick={() => navigate(`/post/${data.id}`)}
@@ -140,43 +163,27 @@ const SavedCard = ({ setOpenComment, data, setReload }) => {
             </Box>
             <Box>
               <Stack left={'1vh'} bottom={'1vh'} flexDirection={"row"} justifyContent={"space-between"} position={"absolute"} >
-                  {like ? (
-                    <FavoriteIcon
-                      onClick={getLike}
-                      color="error"
-                      style={{ margin: "0px 10px 5px 0" , display: "flex"}}
-                    />
-                  ) : (
-                    <FavoriteBorderIcon
-                      onClick={getLike}
-                      style={{ margin: "0px 10px 5px 0" , display: "flex" }}
-                    />
-                  )}
-                  <ChatBubbleOutlineIcon
-                    onClick={getComments}
-                    style={{ margin: "0px 10px 4px", display: "flex" }}
-                  />
+              <LikeWithCount getLike={getLike} onClick={onclick} like={like}>{likeCount > 0 && likeCount }</LikeWithCount>
+              <ChatBubbleWithCount onClick={getComments}>{data.comments > 0 && data.comments }</ChatBubbleWithCount>
+
                   <ShareIcon
                     onClick={shareLink}
-                    style={{ margin: "0px 10px 6px", display: "flex" }}
+                    style={{ margin: "0px 10px", display: "flex" }}
                   />
-                  {userDetails.email === data.email &&
-                  <DeleteIcon
-                    onClick={()=> setConfirmOpen(true)}
-                    style={{ margin: "0px 10px 6px", display: "flex" }}
-                  />}
+                  
+            <ViewWithCount>{data.views}</ViewWithCount>
             </Stack>
 
               <Stack right={'1vh'} bottom={'1vh'} flexDirection={"row"} justifyContent={"space-between"} position={"absolute"} >
                   {save ? (
                     <BookmarkIcon
                       onClick={getSave}
-                      style={{ marginBottom: "6px", display: "flex" }}
+                      style={{  display: "flex" }}
                     />
                   ) : (
                     <BookmarkBorderIcon
                       onClick={getSave}
-                      style={{ marginBottom: "6px", display: "flex" }}
+                      style={{  display: "flex" }}
                     />
                   )}
             </Stack>

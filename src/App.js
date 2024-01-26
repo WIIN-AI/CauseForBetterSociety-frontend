@@ -16,26 +16,30 @@ import SignIn from "./pages/signin";
 import SignUp from "./pages/signup";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useState } from "react";
+import Notifications from "./pages/notifications";
 
 function App() {
 
   const [openComment, setOpenComment] = useState(false);
+  const [search, setSearch] = useState("");
+
 
   return (
     <GoogleOAuthProvider clientId="782661790171-6vqudk01fu4sajid0huvbr3d4qu29cv7.apps.googleusercontent.com">
       <BrowserRouter>
-        <Navbar />
+        <Navbar setSearch={setSearch} />
         <Container maxWidth="lg">
           <Routes>
-            <Route index element={<Home setOpenComment={setOpenComment} />} />
+            <Route index element={<Home setOpenComment={setOpenComment} search={search} setSearch={setSearch}/>} />
             <Route path="/create" element={<CreatePost />} />
             <Route path="/post/:id" element={<PostDetails openComment={openComment} setOpenComment={setOpenComment} />} />
             <Route path="/saved" element={<SavedPost setOpenComment={setOpenComment} />} />
             <Route path="/articles" element={<MyArticles setOpenComment={setOpenComment} />} />
 
+            <Route path="/notifications" element={<Notifications setOpenComment={setOpenComment} /> } />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/clearedissues" element={<ClearedIssues setOpenComment={setOpenComment}/>} />
+            <Route path="/clearedissues" element={<ClearedIssues setOpenComment={setOpenComment} search={search} setSearch={setSearch}/>} />
             <Route path="/profile" element={<Profile />} />
 
             <Route path="/signin" element={<SignIn />} />

@@ -1,14 +1,16 @@
-import { Box, Grid, InputAdornment, TextField } from "@mui/material";
-import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import { Box, Grid, InputAdornment, TextField, useMediaQuery } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 import FmdGoodIcon from '@mui/icons-material/FmdGood';
 import SearchIcon from '@mui/icons-material/Search';
-import {loginDetails} from './../../components/loginDetails'
+import {loginDetails, notificationsCount, userDetails} from '../loginDetails'
 import { googleLogout } from '@react-oauth/google';
 import ConfirmModal from "./confirmModal";
 
-const Notification = () => {
+const SideMenu = ({search, setSearch}) => {
   const navigate = useNavigate();
+  const {pathname} = useLocation()
+  const searchVisibilty = (pathname === "/" || pathname === "/clearedissues")
 
   function signOut(){
     setConfirmOpen(false)
@@ -18,13 +20,28 @@ const Notification = () => {
 
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-
   const login  = loginDetails.login
-  
+
+  const [notificationDetails, setNotificationDetails] = useState([]);
+  const matches = useMediaQuery('(min-width:900px)');
+
+
+  useEffect(()=>{
+   login && matches && fetch(`${process.env.REACT_APP_API}/get_notifications?email=${userDetails.email}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((response) => response.json())
+      .then(data => {
+        const filterData = data.filter(e => e.read === false)
+        setNotificationDetails(filterData)
+      })
+      .catch((err) => console.log(err));
+  },[login, matches])  
   
   return (
     <Grid>
-      <Box textAlign={"left"} width={"100%"}>
+      <Box textAlign={"left"} width={"25vh"}>
       <Box
         textAlign={"center"}
         width={"100%"}
@@ -38,7 +55,14 @@ const Notification = () => {
       >
         Menu
       </Box>
-        <TextField size="small" id="standard-basic" fullWidth placeholder="Search by location"
+        {searchVisibilty && 
+        <TextField 
+          size="small" 
+          id="standard-basic" 
+          fullWidth  
+          placeholder="Search by location"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -52,7 +76,23 @@ const Notification = () => {
             ),
           }}
         sx={{paddingTop: "10px", height: "45px",}}
-        />
+        />}
+        {login && 
+        <Box
+        onClick ={() => navigate("/notifications")} 
+        sx={{cursor: "pointer", borderBottom : "1px solid #000000", padding: "15px 5px"}}>
+            Notifications 
+            {notificationDetails.length > 0 &&<span 
+            style={{ display: "inline-flex",
+              backgroundColor: "red", 
+              height: "20px", 
+              width: "20px", 
+              borderRadius: "50%",
+              justifyContent: "center",
+              marginLeft:15,
+              color: "white"
+            }}>{notificationDetails.length}</span>}
+        </Box>}
         <Box
           onClick={() => navigate("/")}
           sx={{
@@ -117,24 +157,10 @@ const Notification = () => {
         >
           Sign out
         </Box>}
-        <Box
-            textAlign={"center"}
-            width={"100%"}
-            borderRadius={"2px"}
-            mb={1}
-            p={1}
-            bgcolor={"black"}
-            color={"white"}
-            sx={{
-              cursor: "pointer",
-            }}
-          >
-            Notification
-          </Box>
       </Box>
       <ConfirmModal confirmOpen={confirmOpen} setConfirmOpen={setConfirmOpen} onClick={() => {googleLogout(); signOut()}}>Are you sure to sign out?</ConfirmModal>
     </Grid>
   );
 };
 
-export default Notification;
+export default SideMenu;

@@ -1,22 +1,21 @@
 import * as React from "react";
-// import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import { Box, Container, TextField } from "@mui/material";
-import { CopyToClipboard } from "react-copy-to-clipboard";
 import { TextInputProps } from "../../pages/createPost";
 import ConfirmModal from "./confirmModal";
+import { userDetails } from "../loginDetails";
+import { useNavigate } from "react-router";
 
-export default function RequestDialog({ setOpenLink, openLink, children}) {
+export default function RequestDialog({ setOpenLink, openLink, id, data}) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const [confirmOpen, setConfirmOpen] = React.useState(false)
+  const navigate = useNavigate()
 
   const handleClose = () => {
     setOpenLink(false);
@@ -31,14 +30,59 @@ export default function RequestDialog({ setOpenLink, openLink, children}) {
     setConfirmOpen(true)
   }
 
-  const submit = function(){
-    setConfirmOpen(false)
-    setOpenLink(false)
-    setTimeout(()=>{
-      alert("your request has sent")
-    },200)
-    clearTimeout()
-    handleClose()
+  const postOwner = data.email === userDetails?.email 
+
+  const submit = async function () {
+
+    const formData = new FormData();
+      formData.append('id', id);  
+      formData.append('image', image);
+      formData.append("description", yourRequestText.replace(/\n/g, "<br />"))
+      formData.append("email", userDetails.email)
+      formData.append("name", userDetails.name)
+      try {
+      const response = await fetch(`${process.env.REACT_APP_API}/upload_request`, {
+        method: "POST",
+        body: formData,
+      });
+      const result = await response.json();
+      console.log("Success:", result);
+      // alert(result.message)
+      setConfirmOpen(false)
+      setOpenLink(false)
+      handleClose()
+    } 
+    catch (error) {
+      console.error("Error:", error);
+    }
+
+      postOwner && fetch(`${process.env.REACT_APP_API}/apporved`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: userDetails.email,
+        id: id,
+        apporve : false,
+      })
+    })
+      .then((response) => response.json())
+      .then((data) => {})
+      .catch((err) => console.log(err))
+
+      !postOwner && fetch(`${process.env.REACT_APP_API}/notification`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          parent_post_id: id,
+          title : `${userDetails.name} responded on your post for request to complete.`,
+          name: "responded",
+        })
+      })
+        .then((response) => response.json())
+        .then(data => console.log(data))
+        .catch((err) => console.log(err));
+
+      navigate(0)
   }
 
   const [imageUrl, setImageUrl] = React.useState(null);

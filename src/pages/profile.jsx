@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Box, Container, Divider, Grid, useMediaQuery } from '@mui/material'
 import Menu from '../components/UI/Menu'
 import { useNavigate } from 'react-router';
-import { loginDetails } from '../components/loginDetails';
+import { loginDetails, userDetails } from '../components/loginDetails';
 import { Link } from 'react-router-dom';
 
 const Profile = () => {
@@ -14,7 +14,6 @@ const Profile = () => {
     !login && navigate('/signin')
   },[login ,navigate])
 
-  const userDetails = JSON.parse(localStorage.getItem('userDetails'));
   const firstLetter = userDetails?.name.slice(0,1).toUpperCase()
   const matches = useMediaQuery('(min-width:900px)');
 

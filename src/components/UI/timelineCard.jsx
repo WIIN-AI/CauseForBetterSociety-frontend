@@ -9,8 +9,9 @@ import { Box, Stack } from "@mui/material";
 import NotsigninDrawer from "./drawer";
 import Dialog from "./Dialog";
 import { useNavigate } from "react-router";
-import {loginDetails} from './../../components/loginDetails'
+import {loginDetails, userDetails} from './../../components/loginDetails'
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { ChatBubbleWithCount, LikeWithCount, ViewWithCount } from "../otherExports";
 
 
 
@@ -23,10 +24,10 @@ const   TimelineCard = ({ setOpenComment, data }) => {
   const matches = useMediaQuery('(min-width:900px)');
   const mobilematches = useMediaQuery('(min-width:600px)');
 
-  const userDetails = JSON.parse(localStorage.getItem('userDetails'));
-
   const navigate = useNavigate();
   const login  = loginDetails.login
+  const [likeCount, setlikeCount] = useState(data.likes)
+  const postOwner = data.email === userDetails?.email 
 
   const getLike = function() {
     if (login) {
@@ -41,8 +42,22 @@ const   TimelineCard = ({ setOpenComment, data }) => {
         .then((response) => response.json())
         .then(() => {
           setLike((e) => !e);
+          !like ? setlikeCount((prev) => prev + 1) : setlikeCount((prev) => prev - 1)
         })
         .catch((err) => console.log(err));
+
+        !postOwner && !like && fetch(`${process.env.REACT_APP_API}/notification`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            parent_post_id: data.id,
+            title : `${userDetails.name} liked your post.`,
+            name: "liked",
+          })
+        })
+          .then((response) => response.json())
+          .then(data => console.log(data))
+          .catch((err) => console.log(err));
     } else {
       setOpen(true);
     }
@@ -121,28 +136,14 @@ const   TimelineCard = ({ setOpenComment, data }) => {
 
 
             <Stack bottom={'1vh'} flexDirection={"row"} justifyContent={"space-between"} position={"absolute"} >
-                {like ? (
-                  <FavoriteIcon
-                    onClick={getLike}
-                    color="error"
-                    style={{ margin: "0px 10px 5px 0" , display: "flex"}}
-                  />
-                ) : (
-                  <FavoriteBorderIcon
-                    onClick={getLike}
-                    style={{ margin: "0px 10px 5px 0" , display: "flex" }}
-                  />
-                )}
-                <ChatBubbleOutlineIcon
-                  onClick={getComments}
-                  style={{ margin: "0px 10px 4px", display: "flex" }}
-                />
+              <LikeWithCount getLike={getLike} onClick={onclick} like={like}>{likeCount > 0 && likeCount}</LikeWithCount>
+              <ChatBubbleWithCount onClick={getComments}>{data.comments > 0 && data.comments }</ChatBubbleWithCount>
                 <ShareIcon
                   onClick={shareLink}
                   style={{ margin: "0px 10px 6px", display: "flex" }}
-                />
-          </Stack>
-
+                />  
+                <ViewWithCount>{data.views}</ViewWithCount>
+                </Stack>
             <Stack right={'1vh'} bottom={'1vh'} flexDirection={"row"} justifyContent={"space-between"} position={"absolute"} >
                 {save ? (
                   <BookmarkIcon

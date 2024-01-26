@@ -5,21 +5,22 @@ import { TextField, useMediaQuery } from "@mui/material";
 import Comment from "./comment";
 import { useEffect } from "react";
 import { useState } from "react";
-import { loginDetails } from "../loginDetails";
+import { loginDetails, userDetails } from "../loginDetails";
 import { TextInputProps } from "../../pages/createPost";
 
-const Comments = ({ data, open = false, setOpen }) => {
+const Comments = ({ data, id, open = false, setOpen }) => {
   const login = loginDetails.login;
   const [comment, setComment] = useState([]);
   const fetchComments = comment.sort((a, b) => b.id.localeCompare(a.id))
 
   const [writeComment, setWriteComment] = useState("");
-  const userDetails = JSON.parse(localStorage.getItem('userDetails'));
   const matches = useMediaQuery('(min-width:600px)');
+
+  const postOwner = data.email === userDetails?.email
 
 
   function getComments() {
-    fetch(`${process.env.REACT_APP_API}/get_comments?id=${data}`, {
+    fetch(`${process.env.REACT_APP_API}/get_comments?id=${id}`, {
       method: "GET",
       // credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -50,9 +51,10 @@ const Comments = ({ data, open = false, setOpen }) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id : data,
+          id : id,
           comment: writeComment,
-          name: userDetails.name
+          name: userDetails.name,
+          email: userDetails.email,
         }),
       }
     )
@@ -65,6 +67,19 @@ const Comments = ({ data, open = false, setOpen }) => {
         setWriteComment("");
         getComments();
       });
+
+      !postOwner && fetch(`${process.env.REACT_APP_API}/notification`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          parent_post_id: id,
+          title : `${userDetails.name} commented on your post.`,
+          name: "commented",
+        })
+      })
+        .then((response) => response.json())
+        .then(data => console.log(data))
+        .catch((err) => console.log(err));
   };
 
   return (
@@ -77,7 +92,7 @@ const Comments = ({ data, open = false, setOpen }) => {
       >
         <Box boxSizing={"border-box"} p={3} sx={{ width: matches ? "35vh" : "100%",  height: "100vh" }} role="presentation">
           <p className="sub-heading font-600 center">Comments</p><br/>
-          <p>{data.description}</p>
+
           {login && (
             <form onSubmit={sendComment}>
               <Box textAlign={"left"}>
