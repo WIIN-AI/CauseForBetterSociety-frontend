@@ -4,6 +4,7 @@ import { Container, Grid, useMediaQuery } from "@mui/material";
 import useFetch from "../components/hooks/useFetch";
 import Loader from "../components/UI/loader/Loader";
 import Menu from "../components/UI/Menu";
+import { Helmet } from "react-helmet";
 
 
 const Home = ({setOpenComment, search, setSearch}) => {
@@ -20,6 +21,13 @@ const Home = ({setOpenComment, search, setSearch}) => {
 
   return (
     <Grid mt={8} mb={5} marginX={1} className="flex">
+
+        <Helmet>
+            <title>CFBS - Home</title>
+            <meta name="title" content="pending timeline" />
+            <meta name="main title" content="Cause For Better Society" />
+        </Helmet>
+
       <Grid container md={8} item display={"block"}>
       <Container maxWidth={matches && "sm"} >
         <p className='medium font-600'>Your timeline</p>

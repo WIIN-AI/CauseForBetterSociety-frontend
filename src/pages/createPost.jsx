@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {loginDetails, userDetails} from '../components/loginDetails'
 import ConfirmModal from "../components/UI/confirmModal";
+import AlertDialog from "../components/UI/alertDialog";
+import { Helmet } from "react-helmet";
 
 export const TextInputProps = {
   InputLabelProps:{
@@ -27,7 +29,8 @@ const CreatePost = () => {
 
   useEffect(()=>{
     !login && navigate('/')
-    login && fetch(`${process.env.REACT_APP_API}/states`,{
+      login && 
+      fetch(`${process.env.REACT_APP_API}/states`,{
                 headers: { "Content-Type": "application/json" },
                 method: "GET",    
                 }).then(res => res.json())
@@ -80,6 +83,10 @@ const CreatePost = () => {
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [textAlert, setTextAlert] = useState('')
+  const [alertOpen, setAlertOpen] = useState(false)
+
+
 
 
   const submit = async function (event) {
@@ -87,7 +94,7 @@ const CreatePost = () => {
     const formData = new FormData();
       formData.append("title", subject);
       formData.append('image', image);
-      formData.append("description", story.replace(/\n/g, "<br />"))
+      formData.append("description", story.replace(/\n/g, "<br />").trim())
       formData.append("sub_heading", subheading.trim())
       formData.append("visiblity", userVisiblity)
       formData.append("email", userDetails.email)
@@ -104,9 +111,13 @@ const CreatePost = () => {
       });
       const result = await response.json();
       console.log("Success:", result);
-      alert(result.message)
+      setConfirmOpen(false)
+      setAlertOpen(true)
+      setTextAlert(result.message)
       reset()
-      navigate('/')
+      setTimeout(() =>{
+        navigate('/')
+      },1200)
     } 
     catch (error) {
       console.error("Error:", error);
@@ -120,6 +131,13 @@ const CreatePost = () => {
 
   return (
     <Container maxWidth="md">
+
+        <Helmet>
+            <title>CFBS - Write</title>
+            <meta name="title" content="write your article" />
+        </Helmet>
+
+
       <Box className="center text-center" mt={8} mb={8}>
         <p className="heading font-800 capitalize">create post</p>
         <form onSubmit={handleConfirmation}>
@@ -270,6 +288,7 @@ const CreatePost = () => {
         </form>
       </Box>
       <ConfirmModal confirmOpen={confirmOpen} setConfirmOpen={setConfirmOpen} onClick={submit}>Are you sure ?</ConfirmModal>
+      <AlertDialog open={alertOpen} setOpen={setAlertOpen} text={textAlert} />
     </Container>
   );
 };

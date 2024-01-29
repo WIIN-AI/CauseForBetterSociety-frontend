@@ -37,7 +37,7 @@ const Navbar = ({setSearch}) => {
       </div>
       <div className="center flex">
         {matches && !login && <button onClick={()=> navigation('/signin')} className="button">sign in</button>}
-        {matches && !login && <button onClick={()=> navigation('/signup')} className="button">sign up</button>}
+        {/* {matches && !login && <button onClick={()=> navigation('/signup')} className="button">sign up</button>} */}
         {login && <button onClick={()=> navigation('/create')} className="button">write</button>}       
       </div>
       <MobileMenu open={open} setOpen={setOpen} setSearch={setSearch}/>

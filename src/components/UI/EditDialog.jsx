@@ -6,12 +6,13 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import ConfirmModal from './confirmModal'
 import { useTheme } from "@mui/material/styles";
 import { userDetails } from '../loginDetails';
+import AlertDialog from './alertDialog';
 
 const EditDialog = ({open, setOpen, data, setPageRefresh }) => {
 
   const [heading, setHeading] = useState(data.heading) 
   const [subheading, setSubheading] = useState(data.subheading) 
-  const [description, setDescription] = useState(data.description) 
+  const [description, setDescription] = useState(data.description.split('<br />').join(" ").trim()) 
 
   console.log(heading, subheading)
 
@@ -19,6 +20,8 @@ const EditDialog = ({open, setOpen, data, setPageRefresh }) => {
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false)
+  const [textAlert, setTextAlert] = useState('')
 
 
   const handleClose = () => {
@@ -48,12 +51,16 @@ const EditDialog = ({open, setOpen, data, setPageRefresh }) => {
       .then((response) => response.json())
       .then((data) => {
         setConfirmOpen(false)
-        alert(data.message)
+        // alert(data.message)
+        setAlertOpen(true)
+        setTextAlert(data.message)
       })
       .catch((err) => console.log(err))
       .finally(() =>{
-        handleClose()
-        setPageRefresh(e => !e)
+        setTimeout(() =>{
+          handleClose()
+          setPageRefresh(e => !e)
+        },1000)
       });
   }
 
@@ -124,6 +131,7 @@ const EditDialog = ({open, setOpen, data, setPageRefresh }) => {
         </Container>
       </Dialog>
       <ConfirmModal confirmOpen={confirmOpen} setConfirmOpen={setConfirmOpen} onClick={submit}>Are you sure ?</ConfirmModal>
+      <AlertDialog open={alertOpen} setOpen={setAlertOpen} text={textAlert} />
     </React.Fragment>
   )
 }

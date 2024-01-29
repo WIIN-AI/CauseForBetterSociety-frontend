@@ -1,14 +1,20 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Container, Divider, Grid, useMediaQuery } from '@mui/material'
 import Menu from '../components/UI/Menu'
 import { useNavigate } from 'react-router';
 import { loginDetails, userDetails } from '../components/loginDetails';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+import AlertDialog from '../components/UI/alertDialog';
 
 const Profile = () => {
 
   const navigate = useNavigate();
   const login  = loginDetails.login
+  const [alertOpen, setAlertOpen] = useState(false)
+  const [textAlert, setTextAlert] = useState('')
+
+
 
   useEffect(()=>{
     !login && navigate('/signin')
@@ -20,9 +26,20 @@ const Profile = () => {
 
   const image = userDetails?.picture
 
+  function deleteAccount(){
+    setAlertOpen(true)
+    setTextAlert("we are working to develop")
+  }
+
 
   return (
     <Grid mt={8} marginX={1} className="flex">
+
+        <Helmet>
+            <title>CFBS - Profile</title>
+            <meta name="title" content="your profile" />
+        </Helmet>
+
       <Grid container md={8} item display={'block'} padding={ matches && '0 20px'}>
       <Container maxWidth="sm">
         <p className='medium font-600'>Profile</p>
@@ -45,7 +62,7 @@ const Profile = () => {
           cursor: "default"
         }}
         >
-          {image !=='' ? <img style={{borderRadius: '50%'}} src={image} alt='profile_image'/> : firstLetter}
+          {image ? <img style={{borderRadius: '50%'}} src={image} alt='profile_image'/> : firstLetter}
         </Box>
         <br/>
         <p className='heading font-700 capitalize'>{userDetails?.name}</p>
@@ -53,13 +70,14 @@ const Profile = () => {
         <br/>
         <Divider><p className='font-500'>Security</p></Divider>
         <br/>
-        <Link style={{color:'red'}} className='font-500'>Deactive Account</Link>
+        <Link onClick={deleteAccount} style={{color:'red'}} className='font-500'>Deactive Account</Link>
         <p>Deactivating will suspend your account until you sign back in.</p><br/>
-        <Link style={{color:'red'}} className='font-500'>Delete Account</Link>
+        <Link onClick={deleteAccount} style={{color:'red'}} className='font-500'>Delete Account</Link>
         <p>Permanently delete your account and all of your content.</p>
         </Container>
       </Grid>
       <Menu/>
+      <AlertDialog open={alertOpen} setOpen={setAlertOpen} text={textAlert} />
     </Grid>
   )
 }

@@ -4,6 +4,7 @@ import TimelineCard from '../components/UI/timelineCard'
 import Loader from '../components/UI/loader/Loader'
 import useFetch from '../components/hooks/useFetch'
 import Menu from '../components/UI/Menu'
+import { Helmet } from 'react-helmet'
 
 const ClearIssues = ({setOpenComment, search, setSearch}) => {
 
@@ -20,6 +21,12 @@ const ClearIssues = ({setOpenComment, search, setSearch}) => {
 
   return (
     <Grid mt={8} mb={5} marginX={1} className="flex">
+
+        <Helmet>
+            <title>CFBS - Cleared</title>
+            <meta name="title" content="Cleared issues timeline" />
+        </Helmet>
+
        <Grid container md={8} item display={'block'}>
        <Container maxWidth={matches && "sm"}>
         <p className='medium font-600'>Cleared issues</p>

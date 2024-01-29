@@ -6,6 +6,7 @@ import SavedCard from '../components/UI/SavedCard'
 import useFetch from '../components/hooks/useFetch'
 import { useNavigate } from 'react-router'
 import { loginDetails, userDetails } from '../components/loginDetails'
+import { Helmet } from 'react-helmet'
 
 const MyArticle = ({setOpenComment}) => {
 
@@ -26,6 +27,12 @@ const MyArticle = ({setOpenComment}) => {
 
   return (
     <Grid mt={8} mb={5} marginX={1} className="flex">
+
+        <Helmet>
+            <title>CFBS - My Articles</title>
+            <meta name="title" content="your article stories" />
+        </Helmet>
+
       <Grid container md={8} item display={"block"}>
       <Container maxWidth={matches && "sm"}>
         <p className='medium font-600'>My Article</p>

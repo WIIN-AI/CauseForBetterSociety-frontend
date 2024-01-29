@@ -5,3 +5,4 @@ export const loginDetails = {
   login: userDetails ? userDetails.login : false,
 };
 
+export const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID

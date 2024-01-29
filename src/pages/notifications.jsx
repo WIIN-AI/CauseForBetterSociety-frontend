@@ -3,9 +3,15 @@ import React, { useEffect, useState } from "react";
 import Menu from "../components/UI/Menu";
 import { userDetails } from "../components/loginDetails";
 import { useNavigate } from "react-router";
+import ConfirmModal from "../components/UI/confirmModal";
+import AlertDialog from "../components/UI/alertDialog";
+import Loader from "../components/UI/loader/Loader";
+import { Helmet } from "react-helmet";
 
 const Notifications = ({setOpenComment}) => {
   const matches = useMediaQuery("(min-width:900px)");
+  const [textAlert, setTextAlert] = useState('')
+  const [open, setOpen] = useState(false)
 
   const NotificationsCard = (data) => {
 
@@ -39,8 +45,8 @@ const Notifications = ({setOpenComment}) => {
 
     return (
       <Box
-        bgcolor="#fcfcfc"
-        border={read ? "1px solid #00000020" : "1px solid #00000080"}
+        bgcolor={read ? "#fcfcfc" :"#f6f6f6"}
+        border={read ? "1px solid #00000020" : "1px solid #000000"}
         mt={1}
         minHeight={70}
         boxSizing={"border-box"}
@@ -65,28 +71,66 @@ const Notifications = ({setOpenComment}) => {
   };
 
   const [notificationDetails, setNotificationDetails] = useState([]);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
-  useEffect(()=>{
+  const clearNotifications = function(){
+    fetch(`${process.env.REACT_APP_API}/clear_notifications`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: userDetails.email
+      }),
+    })
+      .then((response) => response.json())
+      .then(data => {
+        setConfirmOpen(false);
+        setOpen(true)
+        setTextAlert(data.message)
+      })
+      .catch((err) => console.log(err))
+      .finally(() => getNotifications())
+  }
+  const[pending, setPending] = useState(true)
+  function getNotifications(){
     fetch(`${process.env.REACT_APP_API}/get_notifications?email=${userDetails.email}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     })
       .then((response) => response.json())
       .then(data => setNotificationDetails(data))
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(()=> setPending(false))
+  }
+
+  useEffect(()=>{
+    getNotifications()
   },[])
 
   return (
-    <Grid mt={8} marginX={1} className="flex">
+    <>
+        <Helmet>
+            <title>CFBS - Notifications</title>
+            <meta name="title" content="Notifications" />
+        </Helmet>
+
+    <Grid mt={8} mb={5} marginX={1} className="flex">
       <Grid container md={8} item display={"block"}>
         <Container maxWidth={matches && "sm"}>
+          <Stack height={40}  flexDirection={"row"} justifyContent={"space-between"} alignItems={"center"}>
           <p className="medium font-600">Your Notifications</p>
+          {notificationDetails.length > 0 && <button className="reset font-500" onClick={() => setConfirmOpen(true)}>Clear all</button>}
+          </Stack>
           <br />
-          {notificationDetails.map(data => <NotificationsCard data={data} />)}
+          {pending && <Loader/>}
+          {notificationDetails.length === 0 && <p className='medium font-400'>No notifications are availble</p>}
+          {notificationDetails.map((data) => <NotificationsCard key={data.id} id={data.id} data={data} />)}
         </Container>
       </Grid>
       <Menu />
+      <ConfirmModal confirmOpen={confirmOpen} setConfirmOpen={setConfirmOpen} onClick={clearNotifications}>Are you sure to clear all notifications?</ConfirmModal>
+      <AlertDialog open={open} setOpen={setOpen} text={textAlert} />
     </Grid>
+    </>
   );
 };
 

@@ -29,7 +29,7 @@ const RequestSection = ({ data ,setPageRefresh}) => {
   const approved = data.status === "closed"
   const requestCheck = requests?.length>0
 
-  const RequestCard = function({value, i}){
+  const RequestCard = function({value, id}){
     
     const [loading, setLoading] = useState(true);
     const date = new Date(value.date).toLocaleDateString("en-IN",options);
@@ -40,7 +40,7 @@ const RequestSection = ({ data ,setPageRefresh}) => {
               bgcolor="#f9f9f9"
               border={"1px solid #00000040"}
               // borderRadius={1}
-              key={i} id={i} p={1}
+              key={id} id={id} p={1}
               marginTop={2}
             >
               {/* <br/>
@@ -57,7 +57,7 @@ const RequestSection = ({ data ,setPageRefresh}) => {
                 <p style={{ opacity: "80%" }}>via : {value.name}</p>
                 <p style={{ opacity: "80%" }}>{date}</p>
               </Stack>
-              <Divider color="#ececec"/>
+              <Divider color="#ececec" key={id}/>
               <Box
                 // bgcolor="#f6f6f6"
                 // border={"1px solid #00000020"}
@@ -105,7 +105,7 @@ const RequestSection = ({ data ,setPageRefresh}) => {
         direction="row"
         justifyContent={"space-between"}
       >
-        <p className="sub-heading font-600 center">Request's to complete</p>
+        <p className="sub-heading font-600 center">Resolution</p>
         {userDetails?.email === data.email && requestCheck && 
         <button 
         disabled = {approved}
@@ -115,8 +115,8 @@ const RequestSection = ({ data ,setPageRefresh}) => {
         </button>}
       </Stack>
       <br />
-      {!requestCheck && <p>No requests is available</p>}
-      {requestCheck && requests.map((value, i) => <RequestCard value={value} i={i}/>)}
+      {!requestCheck && <p>No solution is available</p>}
+      {requestCheck && requests.map((value, i) => <RequestCard value={value} key={i} id={i}/>)}
       <ConfirmModal confirmOpen={confirmOpen} setConfirmOpen={setConfirmOpen} onClick={approveHandle}>Are you sure for approving to close the issue?</ConfirmModal>
     </Box>
   );

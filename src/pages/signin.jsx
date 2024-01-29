@@ -85,12 +85,28 @@ const SignIn = () => {
     <Container maxWidth="sm">
       <Box mt={18} textAlign={"center"}>
       <Paper elevation={3} sx={{
-        height: '60vh',
-        padding: '5vh',
+        minHeight: '60vh',
+        padding: '5vh 3vh',
         boxSizing: 'border-box'
       }}>
-        <p className="sub-heading font-600 text-center">Welcome back</p><br/>
-        <form onSubmit={signButton}>
+        <p className="sub-heading font-800 text-center">Welcome C.F.B.S</p><br/>
+        <Box textAlign={"left"} padding={2}>
+          <p className="medium font-600">Terms & conditions </p>
+          <ul style={{paddingLeft: "16px", paddingTop: '10px'}}>
+            <li style={{marginBottom: "8px"}}>To create a post, click the "Write" button.</li>
+            <li style={{marginBottom: "8px"}}>Users can choose to remain anonymous by selecting the "anonymous" visibility option during post creation.</li>
+            <li style={{marginBottom: "8px"}}>Note that once a post is uploaded, you can edit or delete it until someone raises a solution to complete.</li>
+            <li style={{marginBottom: "8px"}}>If no completion solution has been raised, authors can freely edit or delete their posts.</li>
+            <li style={{marginBottom: "8px"}}>However, once a completion solution is raised, editing or deletion is restricted to maintain the integrity of the issue resolution process.</li>
+            <li style={{marginBottom: "8px"}}>Users are encouraged to engage with posts by providing comments or responses.</li>
+            <li style={{marginBottom: "8px"}}>Only the post author has the authority to close an issue.</li>
+            <li style={{marginBottom: "8px"}}>If a user is marked as "anonymous," all comments or responses will also be displayed as "anonymous."</li>
+            <li style={{marginBottom: "8px"}}>Any posts containing adult content posted anonymously will lead to the submission of the post author's username for visibility.</li>
+            <li style={{marginBottom: "8px"}}>Once the post issue status is set to "closed" by the author, it will be displayed in the Cleared Issues page.</li>
+            <li style={{marginBottom: "8px"}}>Closure of an issue signifies that the concern has been addressed to the satisfaction of the author.</li>
+          </ul>
+        </Box>
+        {/* <form onSubmit={signButton}>
             <TextField
               fullWidth
               required
@@ -122,15 +138,16 @@ const SignIn = () => {
                 back
               </button>
             </Box>
-            </form>
-            <Box mt={8}>
+            </form> */}
+
+            <Box mt={2}>
             <div style={{width: '180px'}}>
               </div>
               <button type="submit" className="button" onClick={() => googleLogin()}>
                 <p style={{display: "flex"}}><GoogleIcon style={{ marginRight: '30px'}}/> <span>Sign in with google</span></p>
               </button>
-            </Box><br/><br/>
-            <p>No account? <span className="font-700"><Link className="link" to={'/signup'}>Create one</Link></span></p>
+            </Box>
+            {/* <p>No account? <span className="font-700"><Link className="link" to={'/signup'}>Create one</Link></span></p> */}
       </Paper>
       </Box>
 

@@ -17,15 +17,15 @@ import SignUp from "./pages/signup";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useState } from "react";
 import Notifications from "./pages/notifications";
+import { clientId } from "./components/loginDetails";
 
 function App() {
 
   const [openComment, setOpenComment] = useState(false);
   const [search, setSearch] = useState("");
 
-
   return (
-    <GoogleOAuthProvider clientId="782661790171-6vqudk01fu4sajid0huvbr3d4qu29cv7.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={clientId}>
       <BrowserRouter>
         <Navbar setSearch={setSearch} />
         <Container maxWidth="lg">
@@ -43,7 +43,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
 
             <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
+            {/* <Route path="/signup" element={<SignUp />} /> */}
 
             <Route path="*" element={<NoPage />} />
                 

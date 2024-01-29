@@ -53,11 +53,11 @@ const MobileMenu = ({open = false, setOpen, setSearch }) => {
       onClose={() => setOpen(false)}
       onOpen={() => setOpen(false)}
     >
-      <Box p={1} sx={{width: "35vh", height: "100vh" }} role="presentation">
-        {!login && <Box flex={'row'} textAlign={"center"} sx={{padding: "15px 5px"}}>
+      <Box p={1} mt={1} sx={{width: "35vh", height: "100vh" }} role="presentation">
+        {/* {!login && <Box flex={'row'} textAlign={"center"} sx={{padding: "15px 5px"}}>
           <button onClick={()=> navigate('/signin')} className="button">sign in</button>
           <button onClick={()=> navigate('/signup')} className="button">sign up</button>
-        </Box>}
+        </Box>} */}
         <Box textAlign={"left"}>
         <Box
         textAlign={"center"}
