@@ -166,7 +166,7 @@ const PostDetails = ({openComment, setOpenComment}) => {
           setRequestDialog(true); 
         }else{
           setAlertOpen(true)
-          setTextAlert("Atlest one person should request on your post to response")
+          setTextAlert("At least one person should post on solution")
         }
       }
       if(e.target.value === 1){

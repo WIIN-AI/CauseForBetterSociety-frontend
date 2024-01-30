@@ -2,6 +2,7 @@ import { Box, Modal, Typography } from "@mui/material";
 import React from "react";
 
 const AlertDialog = ({ open, setOpen, text }) => {
+  
   const style = {
     position: "absolute",
     top: "50%",
