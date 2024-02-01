@@ -6,7 +6,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import MobileMenu from "../UI/mobileMenu";
 
 
-const Navbar = () => {
+const Navbar = ({setSearch}) => {
   
   const login  = loginDetails.login
   const navigation = useNavigate()
@@ -31,14 +31,16 @@ const Navbar = () => {
         top: 0,
       }}
     >
+      <div className="center flex">
+      {!matches && <MenuIcon onClick={()=>setOpen(true)} fontSize="large"/>}
       <Link className="link" to={'/'}><div className="font-800 medium">C.F.B.S</div></Link>
+      </div>
       <div className="center flex">
         {matches && !login && <button onClick={()=> navigation('/signin')} className="button">sign in</button>}
-        {matches && !login && <button onClick={()=> navigation('/signup')} className="button">sign up</button>}
+        {/* {matches && !login && <button onClick={()=> navigation('/signup')} className="button">sign up</button>} */}
         {login && <button onClick={()=> navigation('/create')} className="button">write</button>}       
-        {!matches && <MenuIcon onClick={()=>setOpen(true)} fontSize="large"/>}
       </div>
-      <MobileMenu open={open} setOpen={setOpen}/>
+      <MobileMenu open={open} setOpen={setOpen} setSearch={setSearch}/>
     </nav>
   );
 };

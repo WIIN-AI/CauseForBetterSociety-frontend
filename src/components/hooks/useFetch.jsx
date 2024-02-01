@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 
-const useFetch = (url, refetch) => {
+const useFetch = (url, refetch = false) => {
   const [data, setData] = useState([]);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     setPending(true);
-    setTimeout( async() => {
-     fetch(url, {
+    setTimeout(async () => {
+      fetch(url, {
         method: "GET",
         // credentials: "include",
+        // mode: "no-cors",
         headers: { "Content-Type": "application/json" },
       })
         .then((response) => {

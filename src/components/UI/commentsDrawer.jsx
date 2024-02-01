@@ -1,21 +1,26 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import { TextField } from "@mui/material";
+import { TextField, useMediaQuery } from "@mui/material";
 import Comment from "./comment";
 import { useEffect } from "react";
 import { useState } from "react";
-import { loginDetails } from "../loginDetails";
+import { loginDetails, userDetails } from "../loginDetails";
 import { TextInputProps } from "../../pages/createPost";
 
-const Comments = ({ data, open = false, setOpen }) => {
+const Comments = ({ data, id, open = false, setOpen }) => {
   const login = loginDetails.login;
   const [comment, setComment] = useState([]);
+  const fetchComments = comment.sort((a, b) => b.id.localeCompare(a.id))
 
   const [writeComment, setWriteComment] = useState("");
+  const matches = useMediaQuery('(min-width:600px)');
+
+  const postOwner = data.email === userDetails?.email
+
 
   function getComments() {
-    fetch(`${process.env.REACT_APP_API}/get_comments?image_id=${data}`, {
+    fetch(`${process.env.REACT_APP_API}/get_comments?id=${id}`, {
       method: "GET",
       // credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -27,7 +32,7 @@ const Comments = ({ data, open = false, setOpen }) => {
         return response.json();
       })
       .then((data) => {
-        setComment(data.comments);
+        setComment(data);
       })
       .catch((err) => {
         console.log(err);
@@ -41,38 +46,53 @@ const Comments = ({ data, open = false, setOpen }) => {
   const sendComment = function (e) {
     e.preventDefault();
     fetch(
-      `${process.env.REACT_APP_API}/add_comment/?image_id=${data}&comment=${writeComment}`,
+      `${process.env.REACT_APP_API}/add_comment`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          image_id : data,
+          id : id,
           comment: writeComment,
+          name: userDetails.name,
+          email: userDetails.email,
         }),
       }
     )
       .then((res) => res.json())
       .then((result) => {
-        alert(result.message);
+        console.log(result.message);  
       })
       .catch((err) => console.log(err))
       .finally(() => {
         setWriteComment("");
         getComments();
       });
+
+      !postOwner && fetch(`${process.env.REACT_APP_API}/notification`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          parent_post_id: id,
+          title : `${userDetails.name} commented on your post.`,
+          name: "commented",
+        })
+      })
+        .then((response) => response.json())
+        .then(data => console.log(data))
+        .catch((err) => console.log(err));
   };
 
   return (
     <>
       <SwipeableDrawer
-        anchor={"right"}
+        anchor={matches ? "right" : "bottom"}
         open={open}
         onClose={() => setOpen(false)}
         onOpen={() => setOpen(false)}
       >
-        <Box p={3} sx={{ width: "35vh", height: "100vh" }} role="presentation">
+        <Box boxSizing={"border-box"} p={3} sx={{ width: matches ? "35vh" : "100%",  height: "100vh" }} role="presentation">
           <p className="sub-heading font-600 center">Comments</p><br/>
-          <p>{data.description}</p>
+
           {login && (
             <form onSubmit={sendComment}>
               <Box textAlign={"left"}>
@@ -89,13 +109,16 @@ const Comments = ({ data, open = false, setOpen }) => {
                 />
               </Box>
               <Box mt={1} textAlign={"right"}>
+                <button type="reset" className="reset" onClick={() => {setOpen(false); setWriteComment("")}}>
+                  close
+                </button>
                 <button type="submit" className="button">
                   send
                 </button>
               </Box>
             </form>
           )}
-          {comment.map((data, i) => (
+          {fetchComments.map((data, i) => (
             <Comment key={i} data={data} />
           ))}
         </Box>

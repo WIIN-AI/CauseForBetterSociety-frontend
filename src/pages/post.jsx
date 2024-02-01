@@ -1,30 +1,44 @@
-import { Box, Container, Divider, Menu, MenuItem, Typography, useMediaQuery } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import { Box, Container, Divider, Menu, MenuItem, useMediaQuery } from "@mui/material";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+
 import ShareIcon from "@mui/icons-material/Share";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import Drawer from "../components/UI/drawer";
+import NotsigninDrawer from "../components/UI/drawer";
 import RequestSection from "../components/UI/requestSection";
 import Dialog from "../components/UI/Dialog";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { useParams } from "react-router";
-import {loginDetails} from '../components/loginDetails'
+import { useNavigate, useParams } from "react-router";
+import {loginDetails, userDetails} from '../components/loginDetails'
 import CommentDrawer from "../components/UI/commentsDrawer";
+import RequestDialog from "../components/UI/RequestDialog";
+import ConfirmModal from "../components/UI/confirmModal";
+import { ChatBubbleWithCount, LikeWithCount} from "../components/otherExports";
+import Loader from "../components/UI/loader/Loader"
+import EditDialog from "../components/UI/EditDialog";
+import AlertDialog from "../components/UI/alertDialog";
+import { Helmet } from "react-helmet";
 
 
 
 const PostDetails = ({openComment, setOpenComment}) => {
   const { id } = useParams("");
-  const myRef = useRef(null);  
+  const navigate = useNavigate()
+
+  const [loading, setLoading] = useState(true);
+  const [alertOpen, setAlertOpen] = useState(false)
+  const [textAlert, setTextAlert] = useState('')
+
 
 
   const [like, setLike] = useState(false);
   const [save, setSave] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [loginPop, setLoginPop] = useState(false);
   const [openShareLink, setOpenShareLink] = useState(false);
+  const [requestDialog, setRequestDialog] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false)
+
   const [data, setData]= useState([])
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -32,40 +46,83 @@ const PostDetails = ({openComment, setOpenComment}) => {
   const [paragraph, setParagraph] = useState([])
 
   const matches = useMediaQuery('(min-width:900px)');
+  const login  = loginDetails.login
+  const [likeCount, setlikeCount] = useState(0)
+
+  const postOwner = data.email === userDetails?.email 
+  const [pageRefresh, setPageRefresh] = useState(false)
+  const [pageTitle, setPageTitle] = useState("page details")
 
   
   useEffect(() => {
-    async function fetchData(){
+
+    async function fetchData(ipAddress){
     try {
-      const response = await fetch(`${process.env.REACT_APP_API}/get_single_incident_details?image_id=${id}`, {
-        method: "GET",
+      const response = await fetch(`${process.env.REACT_APP_API}/post_details`, {
+        method: "POST",
         // credentials: "include",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          "id" : id,
+          "ip" : ipAddress,
+          "email": userDetails && userDetails.email 
+        })
       })
       const result = await response.json();
-      console.log("Success:", result);
+      // console.log("Success:", result);
       setData(result)
-      const spiltLine = result.description.split('<br />')
+      setPageTitle(result.heading)
+      setlikeCount(result.likes)
+      const spiltLine = result?.description.split('<br />')
       setParagraph(spiltLine)
+      setLike(result.you_liked)
+      setSave(result.you_saved)
     }
     catch(error){
       console.log(error)
     }
   }
-  fetchData()
-  }, [id]);
+      fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data =>  fetchData(data.ip))
 
+  }, [id, pageRefresh]);
 
+  // console.log(paragraph.join(','))
 
+  const EditPost = useCallback(() => openEdit && <EditDialog data={data} open={openEdit} setOpen={setOpenEdit} setPageRefresh={setPageRefresh}/>, [data, openEdit]);
 
-
-  const login  = loginDetails.login
-
-  const getLike = function () {
+  const getLike = function() {
     if (login) {
-      setLike((e) => !e);
+        fetch(`${process.env.REACT_APP_API}/liked`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: id,
+            email: userDetails.email,
+          })
+        })
+        .then((response) => response.json())
+        .then(() => {
+          setLike((e) => !e);
+          !like ? setlikeCount((prev) => prev + 1) : setlikeCount((prev) => prev - 1)
+        })
+        .catch((err) => console.log(err));
+
+        !postOwner && fetch(`${process.env.REACT_APP_API}/notification`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            parent_post_id: id,
+            title : `${userDetails.name} liked your post.`,
+            name: "liked",
+          })
+        })
+          .then((response) => response.json())
+          .then(data => console.log(data))
+          .catch((err) => console.log(err));
     } else {
-      setOpen(true);
+      setLoginPop(true);
     }
   };
 
@@ -75,11 +132,23 @@ const PostDetails = ({openComment, setOpenComment}) => {
 
   const getSave = function () {
     if (login) {
-      setSave((e) => !e);
+      fetch(`${process.env.REACT_APP_API}/save`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: id,
+          email: userDetails.email,
+        })
+      })
+        .then((response) => response.json())
+        .then(() => {
+          setSave((e) => !e);
+        })
+        .catch((err) => console.log(err));
     } else {
-      setOpen(true);
+      setLoginPop(true);
     }
-  };
+  } 
 
   const shareLink = function () {
     setOpenShareLink(true);
@@ -89,49 +158,110 @@ const PostDetails = ({openComment, setOpenComment}) => {
     setAnchorEl(event.currentTarget);
   };
   
-  const handleClose = () => {
+  const handleClose = (e) => {
     setAnchorEl(null);
+    if(login){
+      if(e.target.value === 0){
+        if(data.requests.length > 0 || userDetails.email !== data.email){
+          setRequestDialog(true); 
+        }else{
+          setAlertOpen(true)
+          setTextAlert("At least one person should post on solution")
+        }
+      }
+      if(e.target.value === 1){
+        if(userDetails.email === data.email && data.requests.length === 0){
+          setOpenEdit(true)
+        }else{
+          setTimeout(()=>{
+            fetch(`${process.env.REACT_APP_API}/reporting`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                id: data.id,
+                email: userDetails.email,
+              })
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                setAlertOpen(true)
+                setTextAlert(data.message)
+              })
+              .catch((err) => console.log(err))
+          },800)
+          clearTimeout()
+        }  
+      }
+      if(e.target.value === 2){
+        setConfirmOpen(true)
+      }
+    }else{
+      setLoginPop(true);
+    }   
   };
 
-  function ChatBubbleWithText({children, onClick }) {
-    return (
-      <div onClick={onClick} className="flex">
-        <ChatBubbleOutlineIcon />
-        <Typography ml={1}>{children}</Typography>
-      </div>
-    );
-  }
 
-  function LikeWithText({children, onClick }) {
-    return (
-      <div onClick={onClick} className="flex">
-        {like ? ( <FavoriteIcon color="error" onClick={getLike} /> ) : (<FavoriteBorderIcon onClick={getLike} />)}
-        <Typography ml={1}>{children}</Typography>
-      </div>
-    );
-  }
+  function deletePost() {
+
+    fetch(`${process.env.REACT_APP_API}/delete`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: data.id,
+        email: userDetails.email,
+        image: data.imagepath
+      })
+    })
+      .then((response) => response.json())
+      .then(() => {
+        setConfirmOpen(false)
+      })
+      .catch((err) => console.log(err))
+      .finally(() =>{
+        navigate(-1)
+      });
+  };
+
+  const targetRef = useRef(null);
+
+  // const handleScroll = () => {
+  //   if (targetRef.current) {
+  //     targetRef.current.scrollIntoView({ behavior: 'smooth' });
+  //   }
+  // };
+  // showResponse && handleScroll()
 
 
-  
+  const menuList = (postOwner && data.requests?.length === 0) ? 
+  ["Respond", "Edit post", "Delete post"] : 
+  [`${postOwner ? "Respond" : "Resolution"}`, "Report"]
 
   return (
     <Container maxWidth="md" style={{ padding : matches && "0 100px"}}>
+
+      <Helmet>
+            <title>CFBS - {pageTitle}</title>
+            <meta name="title" content={data.heading} />
+            {data.subheading && <meta name="subheading" content={data.subheading} />}
+            <meta name="description" content={paragraph.join(',')} />
+        </Helmet>
+
       <Box mt={8} mb={8}>
         <Box>
-          <p className="heading font-700">{data.heading}</p>
+          <p className="heading font-700">{(data.heading)}</p>
           <br />
           <Box className="flex center" justifyContent={"space-between"}>
-            <p className="font-500">User : {data.user_visibility ? data.email?.split('@')[0] : data.uuid?.slice(0,8)}</p>
-            <p style={{ opacity: "70%" }}>Published on {data.date}</p>
+            <p className="font-500">User : {data.name}</p>
+            <p>Published on {data.createdAt}</p>
           </Box>
           <Box className="flex center" justifyContent={"space-between"}>
             <p className="font-500">
               Issue :{" "}
-              <span className="font-500 uppercase" style={{ color: "red" }}>
-                pending
+              <span className="font-500 uppercase" style={{ color: `${data.status === "pending" && "red"}` }}>
+                {data.status}
               </span>
             </p>
-            <p>{data.location}</p>
+            <p>{data.state}, {data.district}</p>
           </Box>
           <br />
           <Box
@@ -147,30 +277,37 @@ const PostDetails = ({openComment, setOpenComment}) => {
               borderStyle: "solid hidden",
             }}
           >
-            <LikeWithText>{data.comments?.length > 0 ? data.comments?.length : "" }</LikeWithText>
-            <ChatBubbleWithText onClick={getComments}>{data.comments?.length > 0 ? data.comments?.length : "" }</ChatBubbleWithText>
+            <LikeWithCount getLike={getLike} onClick={onclick} like={like}>{likeCount > 0 && likeCount }</LikeWithCount>
+            <ChatBubbleWithCount onClick={getComments}>{data.comments > 0 && data.comments }</ChatBubbleWithCount>
             <ShareIcon onClick={shareLink} />
             {save ? (<BookmarkIcon onClick={getSave} />) : (<BookmarkBorderIcon onClick={getSave} />)}
-            <MoreHorizIcon onClick={handleClick} />
+            {(data.status === "pending" || postOwner) && <MoreHorizIcon onClick={handleClick} />}
             <Menu
               id="basic-menu"
               anchorEl={anchorEl}
               open={moreOpen}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>Request to complete</MenuItem>
-              <MenuItem onClick={handleClose}>Report</MenuItem>
+              {menuList.map((value, i) => {
+              return <MenuItem value={i} key={i} onClick={handleClose}>{value}</MenuItem>
+              })}
             </Menu>
           </Box>
           <br />
-          <img
-            width={"100%"}
-            src="https://i.pinimg.com/originals/cf/e8/5e/cfe85ed3a39d1bcb65b5da5c4f75b363.jpg"
-            alt="post_image"
-            style={{
-              marginBottom: "20px",
-            }}
-          />
+          <Box width={"100%"}>
+            {loading && <Loader/> }
+            <img
+              width={"100%"}
+              src={data.imagepath}
+              alt="post_image"
+              onLoad={() => {setLoading(false)}}
+              style={{
+                marginBottom: "20px",
+                display:` ${loading ? "none" : "block"}`
+              }}
+            />
+          </Box>
+          <Box>Post seen : {data.views}</Box>
           <br />
           {data.subheading && <><p style={{whiteSpace: "pre-wrap"}} className="sub-heading font-700">
               {data.subheading}
@@ -187,13 +324,19 @@ const PostDetails = ({openComment, setOpenComment}) => {
           <br/>
         </Box>
       </Box>
-      <Divider style={{ marginBottom: "50px" }} />
-      <Drawer open={open} setOpen={setOpen} />
-      <CommentDrawer data={id} open={openComment} setOpen={setOpenComment} />
-      <RequestSection id={id} />
-      <Dialog setOpenShareLink={setOpenShareLink} openShareLink={openShareLink}>
+      <EditPost/>
+      <Divider style={{ marginBottom: "50px" }} ref={targetRef} />
+      <CommentDrawer data={data} id={id} open={openComment} setOpen={setOpenComment} />
+      {data.requests && <RequestSection data={data} setPageRefresh={setPageRefresh} />}
+
+      <Dialog setOpenLink={setOpenShareLink} openLink={openShareLink}>
         {window.location.href}
       </Dialog>
+      
+      <RequestDialog data={data} setOpenLink={setRequestDialog} openLink={requestDialog} id={id}/>
+      <NotsigninDrawer open={loginPop} setOpen={setLoginPop} />
+      <AlertDialog open={alertOpen} setOpen={setAlertOpen} text={textAlert} />
+      <ConfirmModal confirmOpen={confirmOpen} setConfirmOpen={setConfirmOpen} onClick={deletePost}>Are you sure to delete this post?</ConfirmModal>
     </Container>
   );
 };

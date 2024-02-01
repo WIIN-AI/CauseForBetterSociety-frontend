@@ -10,12 +10,12 @@ import { useTheme } from "@mui/material/styles";
 import { Box, TextField } from "@mui/material";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
-export default function ResponsiveDialog({ setOpenShareLink, openShareLink, children}) {
+export default function ResponsiveDialog({ setOpenLink, openLink = false, children}) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleClose = () => {
-    setOpenShareLink(false);
+    setOpenLink(false);
   };
 
   const [copied, setCopied] = React.useState(false);
@@ -29,7 +29,7 @@ export default function ResponsiveDialog({ setOpenShareLink, openShareLink, chil
     <React.Fragment>
       <Dialog
         fullScreen={fullScreen}
-        open={openShareLink}
+        open={openLink}
         onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
       >

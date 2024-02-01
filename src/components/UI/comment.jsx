@@ -18,10 +18,10 @@ const Comment = ({data=[]}) => {
         direction="row"
         justifyContent={"space-between"}
       >
-        <p style={{ opacity: "80%" }}>Sagar</p>
-        <p style={{ opacity: "80%" }}>14-12-2023</p>
+        <p style={{ opacity: "80%" }}>{data.name}</p>
+        <p style={{ opacity: "80%" }}>{data.date}</p>
       </Stack>
-      <p className="regular font-400">{data}</p>
+      <p className="regular font-400">{data.comment}</p>
     </Box>
   );
 };

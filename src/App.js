@@ -16,32 +16,37 @@ import SignIn from "./pages/signin";
 import SignUp from "./pages/signup";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { useState } from "react";
+import Notifications from "./pages/notifications";
+import { clientId } from "./components/loginDetails";
 
 function App() {
 
   const [openComment, setOpenComment] = useState(false);
+  const [search, setSearch] = useState("");
 
   return (
-    <GoogleOAuthProvider clientId="782661790171-ekenre4fc5mr7fjuqtogvrp9k8ur0i4b.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={clientId}>
       <BrowserRouter>
-        <Navbar />
+        <Navbar setSearch={setSearch} />
         <Container maxWidth="lg">
           <Routes>
-            <Route index element={<Home setOpenComment={setOpenComment} />} />
+            <Route index element={<Home setOpenComment={setOpenComment} search={search} setSearch={setSearch}/>} />
             <Route path="/create" element={<CreatePost />} />
             <Route path="/post/:id" element={<PostDetails openComment={openComment} setOpenComment={setOpenComment} />} />
             <Route path="/saved" element={<SavedPost setOpenComment={setOpenComment} />} />
             <Route path="/articles" element={<MyArticles setOpenComment={setOpenComment} />} />
 
+            <Route path="/notifications" element={<Notifications setOpenComment={setOpenComment} /> } />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/clearedissues" element={<ClearedIssues setOpenComment={setOpenComment}/>} />
+            <Route path="/clearedissues" element={<ClearedIssues setOpenComment={setOpenComment} search={search} setSearch={setSearch}/>} />
             <Route path="/profile" element={<Profile />} />
 
             <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
+            {/* <Route path="/signup" element={<SignUp />} /> */}
 
             <Route path="*" element={<NoPage />} />
+                
           </Routes>
         </Container>
       </BrowserRouter>

@@ -20,10 +20,11 @@ export default function ConfirmModal({children, confirmOpen, setConfirmOpen, ...
         keepMounted
         onClose={()=>setConfirmOpen(false)}
         aria-describedby="alert-dialog-slide-description"
+        sx={{zIndex: 99999}}
       >
         <DialogTitle>{children}</DialogTitle>
         <DialogActions>
-          <button className='button' {...props}>Okay</button>
+          <button className='button' {...props}>Yes</button>
           <button className='reset' onClick={()=>setConfirmOpen(false)}>Cancel</button>
         </DialogActions>
       </Dialog>
