@@ -78,7 +78,7 @@ const EditDialog = ({open, setOpen, data, setPageRefresh }) => {
       <form onSubmit={formSubmitHandler}>
         <DialogContent>
           <DialogContentText>
-            <Box minHeight={'20vh'} width={'50vh'}>
+            <Box minHeight={'20vh'} minWidth={'50vh'}>
               <Box marginBottom={1}>
                 <p className="font-black medium font-600">Edit your post details</p>
               </Box>

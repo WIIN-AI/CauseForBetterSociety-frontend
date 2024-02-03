@@ -26,14 +26,15 @@ const MyArticle = ({setOpenComment}) => {
   const matches = useMediaQuery('(min-width:900px)');
 
   return (
-    <Grid mt={8} mb={5} marginX={1} className="flex">
+    <Grid mt={8} mb={5} container item marginX={1} className="flex">
 
         <Helmet>
             <title>CFBS - My Articles</title>
             <meta name="title" content="your article stories" />
         </Helmet>
 
-      <Grid container md={8} item display={"block"}>
+        <Grid container md={8} item display={"block"}>
+
       <Container maxWidth={matches && "sm"}>
         <p className='medium font-600'>My Article</p>
         <br/>
@@ -45,7 +46,9 @@ const MyArticle = ({setOpenComment}) => {
         </Grid>
       </Container>
       </Grid>
-     <Menu/>
+      <Grid md={4} item display={"block"} pt={3}>
+        <Menu />
+      </Grid>
     </Grid>
   )
 }

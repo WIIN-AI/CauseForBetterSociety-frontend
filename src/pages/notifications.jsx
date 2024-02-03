@@ -113,7 +113,7 @@ const Notifications = ({setOpenComment}) => {
             <meta name="title" content="Notifications" />
         </Helmet>
 
-    <Grid mt={8} mb={5} marginX={1} className="flex">
+        <Grid mt={8} mb={5} container item marginX={1} className="flex">
       <Grid container md={8} item display={"block"}>
         <Container maxWidth={matches && "sm"}>
           <Stack height={40}  flexDirection={"row"} justifyContent={"space-between"} alignItems={"center"}>
@@ -126,7 +126,9 @@ const Notifications = ({setOpenComment}) => {
           {notificationDetails.map((data) => <NotificationsCard key={data.id} id={data.id} data={data} />)}
         </Container>
       </Grid>
-      <Menu />
+      <Grid md={4} item display={"block"} pt={3}>
+        <Menu />
+      </Grid>
       <ConfirmModal confirmOpen={confirmOpen} setConfirmOpen={setConfirmOpen} onClick={clearNotifications}>Are you sure to clear all notifications?</ConfirmModal>
       <AlertDialog open={open} setOpen={setOpen} text={textAlert} />
     </Grid>

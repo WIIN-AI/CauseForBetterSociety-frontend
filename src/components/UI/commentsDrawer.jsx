@@ -90,7 +90,7 @@ const Comments = ({ data, id, open = false, setOpen }) => {
         onClose={() => setOpen(false)}
         onOpen={() => setOpen(false)}
       >
-        <Box boxSizing={"border-box"} p={3} sx={{ width: matches ? "35vh" : "100%",  height: "100vh" }} role="presentation">
+        <Box boxSizing={"border-box"} p={3} sx={{ width: matches ? "350px" : "100%",  height: "100vh" }} role="presentation">
           <p className="sub-heading font-600 center">Comments</p><br/>
 
           {login && (

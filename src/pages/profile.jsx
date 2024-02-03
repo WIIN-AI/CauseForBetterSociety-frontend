@@ -33,7 +33,7 @@ const Profile = () => {
 
 
   return (
-    <Grid mt={8} marginX={1} className="flex">
+    <Grid mt={8} mb={5} container item marginX={1} className="flex">
 
         <Helmet>
             <title>CFBS - Profile</title>
@@ -76,7 +76,9 @@ const Profile = () => {
         <p>Permanently delete your account and all of your content.</p>
         </Container>
       </Grid>
-      <Menu/>
+      <Grid md={4} item display={"block"} pt={3}>
+        <Menu />
+      </Grid>
       <AlertDialog open={alertOpen} setOpen={setAlertOpen} text={textAlert} />
     </Grid>
   )
