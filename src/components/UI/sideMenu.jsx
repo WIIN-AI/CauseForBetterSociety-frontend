@@ -41,7 +41,7 @@ const SideMenu = ({search, setSearch}) => {
   
   return (
     <Grid>
-      <Box textAlign={"left"} width={"25vh"}>
+      <Box textAlign={"left"} width={"250px"}>
       <Box
         textAlign={"center"}
         width={"100%"}

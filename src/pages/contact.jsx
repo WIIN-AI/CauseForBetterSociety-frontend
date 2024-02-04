@@ -5,53 +5,59 @@ import AlertDialog from "../components/UI/alertDialog";
 import { Helmet } from "react-helmet";
 
 const Contact = () => {
-
-  const [alertOpen, setAlertOpen] = useState(false)
-  const [textAlert, setTextAlert] = useState('')
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [textAlert, setTextAlert] = useState("");
 
   function submithandler(e) {
     e.preventDefault();
-    const {name, mobile, email, message} = e.target;
+    const { name, mobile, email, message } = e.target;
 
     fetch(`${process.env.REACT_APP_API}/contact_us`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        name : name.value,
-        email : email.value,
+        name: name.value,
+        email: email.value,
         mobile: mobile.value,
         message: message.value,
-      })
+      }),
     })
       .then((response) => response.json())
-      .then(data => {
-        setAlertOpen(true)
-        setTextAlert(data.message)
+      .then((data) => {
+        setAlertOpen(true);
+        setTextAlert(data.message);
       })
       .catch((err) => console.log(err))
-      .finally(() =>  e.target.reset())
+      .finally(() => e.target.reset());
   }
 
   return (
-    <Grid mt={8} marginX={1} className="flex">
+    <Grid mt={8} mb={5} container item marginX={1} className="flex">
 
-        <Helmet>
-            <title>CFBS - Contact us</title>
-            <meta name="title" content="Contact us" />
-            <meta name="details" content="We believe in the power of collective action to create a stronger, more equitable India for all. We welcome your ideas, feedback, and support as we work towards this shared vision" />
-        </Helmet>
+      <Helmet>
+        <title>CFBS - Contact us</title>
+        <meta name="title" content="Contact us" />
+        <meta
+          name="details"
+          content="We believe in the power of collective action to create a stronger, more equitable India for all. We welcome your ideas, feedback, and support as we work towards this shared vision"
+        />
+      </Helmet>
 
-
-      <Grid container md={8} item display={"block"} pt={3}>
-        <Container maxWidth="sm">
+      <Grid container md={8} item display={"block"}>        
+      <Container maxWidth="sm">
           <p className="heading font-900">Cause For Better Society</p>
           <br />
           <Divider />
           <br />
           <p className="sub-heading font-800">Contact Us :</p>
           <br />
-          <p className="medium font-600" style={{marginBottom: "8px"}}>Cause For Better Society, Together</p>
-          <p className="font-Nota text-justified font-500" style={{fontStyle: "italic"}}>
+          <p className="medium font-600" style={{ marginBottom: "8px" }}>
+            Cause For Better Society, Together
+          </p>
+          <p
+            className="font-Nota text-justified font-500"
+            style={{ fontStyle: "italic" }}
+          >
             We believe in the power of collective action to create a stronger,
             more equitable India for all. We welcome your ideas, feedback, and
             support as we work towards this shared vision.
@@ -120,11 +126,12 @@ const Contact = () => {
             </form>
           </Paper>
           <br />
-         
         </Container>
         <AlertDialog open={alertOpen} setOpen={setAlertOpen} text={textAlert} />
       </Grid>
-      <Menu />
+      <Grid md={4} item display={"block"} pt={3}>
+        <Menu />
+      </Grid>
     </Grid>
   );
 };

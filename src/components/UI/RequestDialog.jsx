@@ -119,7 +119,7 @@ export default function RequestDialog({ setOpenLink, openLink, id, data}) {
         {/* <DialogTitle id="responsive-dialog-title">{"Request to complete"}</DialogTitle> */}
         <DialogContent>
           <DialogContentText>
-            <Box minHeight={'20vh'} width={'50vh'}>
+            <Box minHeight={'20vh'} minWidth={'50vh'}>
               <Box marginY={1}>
                 <p className="font-black medium font-600">Fill your details to close this issue</p>
               </Box>

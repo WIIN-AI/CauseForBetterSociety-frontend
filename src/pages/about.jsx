@@ -6,8 +6,8 @@ import { Helmet } from "react-helmet";
 const About = () => {
 
   return (
-    <Grid mt={8} marginX={1} className="flex">
-
+    <Grid mt={8} mb={5} container item marginX={1} className="flex">
+      
         <Helmet>
             <title>CFBS - About us</title>
             <meta name="title" content="About us" />
@@ -15,7 +15,7 @@ const About = () => {
         </Helmet>
 
 
-      <Grid container md={8} item display={"block"} pt={3}>
+        <Grid container md={8} item display={"block"}>
         <Container maxWidth="sm">
           <p className={`heading font-900`}>
           Cause For Better Society
@@ -126,7 +126,9 @@ const About = () => {
           <br /><br/>
         </Container>
       </Grid>
-      <Menu />
+      <Grid md={4} item display={"block"} pt={3}>
+        <Menu />
+      </Grid>
     </Grid>
   );
 };

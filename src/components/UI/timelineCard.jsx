@@ -127,10 +127,10 @@ const   TimelineCard = ({ setOpenComment, data }) => {
             <p style={{ marginBottom: "5px" }} className="regular">
               Published on {data.createdAt}
             </p>
-            <p className= {`font-600 ${!mobilematches? 'regular' : 'medium'}`}>
+            <p className= {`font-600 medium`}>
               {data.heading}
             </p>
-            <p style={{width: '70%'}} className="font-Nota text-warp regular font-500">{data.description.split('<br />').join(" ")}</p>
+            <p style={{width: !matches && '70%'}} className="font-Nota text-warp regular font-500">{data.description.split('<br />').join(" ")}</p>
           </div>
             <br />
 
